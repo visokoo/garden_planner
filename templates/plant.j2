@@ -1,0 +1,42 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h1>Plants</h1>
+
+{# READ table #}
+<table>
+    <thead>
+        {# For the table header row, we print the DB attribute names #}
+        <tr>
+            {% for key in plants[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for plant in plants %}
+        <tr>
+            <td>{{ plant.plant_id }}</td>
+            <td>{{ plant.species }}</td>
+            <td>{{ plant.plant_category }}</td>
+            <td>{{ plant.water_requirements }}</td>
+            <td>{{ plant.sunlight }}</td>
+            <td>{{ plant.season }}</td>
+            <td>{{ plant.cycle }}</td>
+            <td>{{ plant.edible }}</td>
+
+            {# DELETE form #}
+            <form id="delete_person_form">
+                <input type="hidden" name="delete_plant_id" value="{{ plant.plant_id }}">
+                <td>
+                    <button type="submit">Delete</button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
