@@ -1,0 +1,63 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h1>Gardens</h1>
+
+{# READ table #}
+<table>
+    <thead>
+        {# For the table header row, we print the DB attribute names #}
+        <tr>
+            {% for key in gardens[0].keys() %}
+            {% if key == 'user_id' %}
+                <th>owner</th>
+            {% else %}
+                <th>{{ key }}</th>
+            {% endif %}
+            {% endfor %}
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for garden in gardens %}
+        <tr>
+            <td>{{ garden.garden_id }}</td>
+            <td>{{ garden.name }}</td>
+            <td>{{ garden.location }}</td>
+            <td>{{ garden.owner }}</td>
+
+            {# DELETE form #}
+            <form id="delete_garden_form">
+                <input type="hidden" name="delete_garden_id" value="{{ garden.garden_id }}">
+                <td>
+                    <button type="submit">Delete</button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{# CREATE form #}
+<h2>Create a garden</h2>
+<form class="cuForm" id="create_garden">
+    <label for="create_garden_name">Name: </label>
+    <input type="text" name="create_garden_name" id="create_garden_name" required></br>
+
+    <label for="create_garden_location">Location: </label>
+    <input type="text" name="create_garden_location" id="create_garden_location"></br>
+
+    <label for="create_garden_owner">Owner: </label>
+    <select name="create_garden_owner" id="create_garden_owner" required>
+        <option value="NULL" selected>Select</option>
+        {% for user in users %}
+        <option value="{{user['user_id']}}" required>
+            {{user['owner']}}
+        </option>
+        {% endfor%}
+    </select></br>
+    <input type="submit">
+</form>
+{% endblock %}
