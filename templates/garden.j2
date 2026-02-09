@@ -23,7 +23,7 @@
         {% for garden in gardens %}
         <tr>
             <td>{{ garden.garden_id }}</td>
-            <td>{{ garden.name }}</td>
+            <td>{{ garden.description }}</td>
             <td>{{ garden.location }}</td>
             <td>{{ garden.owner }}</td>
 
@@ -43,8 +43,8 @@
 {# CREATE form #}
 <h2>Create a garden</h2>
 <form class="cuForm" id="create_garden">
-    <label for="create_garden_name">Name: </label>
-    <input type="text" name="create_garden_name" id="create_garden_name" required></br>
+    <label for="create_garden_description">Description: </label>
+    <input type="text" name="create_garden_description" id="create_garden_description" required></br>
 
     <label for="create_garden_location">Location: </label>
     <input type="text" name="create_garden_location" id="create_garden_location"></br>

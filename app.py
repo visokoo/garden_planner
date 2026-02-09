@@ -50,7 +50,7 @@ def gardens():
     db_connection = db.connect_db()  # Open our database connection
 
     # query1 = "SELECT * FROM Garden;"
-    query1 = "SELECT Garden.garden_id, Garden.name, Garden.location, \
+    query1 = "SELECT Garden.garden_id, Garden.description, Garden.location, \
               CONCAT(User.first_name, ' ', User.last_name) AS owner \
               FROM Garden JOIN User on Garden.user_id = User.user_id;"
     gardens = db.query(db_connection, query1).fetchall()
