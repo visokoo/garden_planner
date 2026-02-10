@@ -1,7 +1,7 @@
 {% extends "main.j2" %}
 {% block content %}
 
-<h1>Plants</h1>
+<h1>View All Plants</h1>
 
 {# READ table #}
 <table>
@@ -25,10 +25,14 @@
             <td>{{ plant.sunlight }}</td>
             <td>{{ plant.season }}</td>
             <td>{{ plant.cycle }}</td>
-            <td>{{ plant.edible }}</td>
+            {% if plant.edible == 1 %}
+                <td>Yes</td>
+            {% else %}
+                <td>No</td>
+            {% endif %}
 
             {# DELETE form #}
-            <form id="delete_person_form">
+            <form id="delete_plant_form">
                 <input type="hidden" name="delete_plant_id" value="{{ plant.plant_id }}">
                 <td>
                     <button type="submit">Delete</button>
@@ -39,4 +43,55 @@
     </tbody>
 </table>
 
+
+{# CREATE form #}
+<h2>Create a plant</h2>
+<form class="cuForm" id="create_plant">
+    <label for="create_plant_species">Species: </label>
+    <input type="text" name="create_plant_species" id="create_plant_species" required></br>
+
+    <label for="create_plant_category">Plant Category: </label>
+    <input type="text" name="create_plant_category" id="create_plant_category"></br>
+
+    <label for="create_water_requirements">Water Requirements: </label>
+    <select name="create_water_requirements" id="create_water_requirements" required>
+        <option value="NULL" selected>Select</option>
+        <option value="NULL">Low</option>
+        <option value="NULL">Moderate</option>
+        <option value="NULL">High</option>
+    </select></br>
+
+    <label for="create_sunlight">Sunlight: </label>
+    <select name="create_sunlight" id="create_sunlight" required>
+        <option value="NULL" selected>Select</option>
+        <option value="NULL">Shade</option>
+        <option value="NULL">Partial</option>
+        <option value="NULL">Full</option>
+    </select></br>
+
+    <label for="create_season">Season: </label>
+    <select name="create_season" id="create_season" required>
+        <option value="NULL" selected>Select</option>
+        <option value="NULL">Spring</option>
+        <option value="NULL">Summer</option>
+        <option value="NULL">Autumn</option>
+        <option value="NULL">Winter</option>
+        <option value="NULL">Year-Round</option>
+    </select></br>
+
+    <label for="create_cycle">Cycle: </label>
+    <select name="create_cycle" id="create_cycle" required>
+        <option value="NULL" selected>Select</option>
+        <option value="NULL">Annual</option>
+        <option value="NULL">Perennial</option>
+        <option value="NULL">Biennial</option>
+    </select></br>
+
+    <label for="create_edible">Edible:</label><br>
+    <input type="radio" id="create_edible_true" name="edible" value="1">
+    <label for="True">Yes</label></br>
+    <input type="radio" id="create_edible_false" name="edible" value="0" checked>
+    <label for="False">No</label>
+    <input type="submit">
+</form>
 {% endblock %}
