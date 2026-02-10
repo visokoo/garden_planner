@@ -55,7 +55,7 @@ def gardens():
               FROM Garden JOIN User on Garden.user_id = User.user_id;"
     gardens = db.query(db_connection, query1).fetchall()
 
-    query2 = "SELECT User.user_id, CONCAT(User.first_name, ' ', User.last_name) AS owner FROM USER;"
+    query2 = "SELECT User.user_id, CONCAT(User.first_name, ' ', User.last_name) AS owner FROM User;"
     users = db.query(db_connection, query2).fetchall()
 
     # Render the garden.j2 file, and also send the renderer
