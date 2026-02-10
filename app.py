@@ -21,9 +21,9 @@ def home():
     print(f"Error rendering page: {e}")
     return "An error occurred while rendering the page.", 500
 
-
-@app.route("/garden-planner", methods=["GET"])
-def garden_planner():
+# -------------- [ PLANT ] -------------- #
+@app.route("/plants", methods=["GET"])
+def plants():
   try:
     db_connection = db.connect_db()  # Open our database connection
 
@@ -50,7 +50,205 @@ def garden_planner():
     if "db_connection" in locals() and db_connection:
         db_connection.close()
 
+# -------------- [ GARDEN ] -------------- #
+@app.route("/gardens", methods=["GET"])
+def gardens():
+  try:
+    db_connection = db.connect_db()  # Open our database connection
 
+    # query1 = "SELECT * FROM Garden;"
+    query1 = "SELECT Garden.garden_id, Garden.description, Garden.location, \
+              CONCAT(User.first_name, ' ', User.last_name) AS owner \
+              FROM Garden JOIN User on Garden.user_id = User.user_id;"
+    gardens = db.query(db_connection, query1).fetchall()
+
+    query2 = "SELECT User.user_id, CONCAT(User.first_name, ' ', User.last_name) AS owner FROM User;"
+    users = db.query(db_connection, query2).fetchall()
+
+    # Render the garden.j2 file, and also send the renderer
+    return render_template(
+      "garden.j2", gardens=gardens, users=users
+    )
+
+  except Exception as e:
+    print(f"Error executing queries: {e}")
+    return(f"An error occurred while executing the database queries.", 500)
+
+  finally:
+    # Close the DB connection, if it exists
+    if "db_connection" in locals() and db_connection:
+        db_connection.close()
+
+# -------------- [ BED ] -------------- #
+@app.route("/beds", methods=["GET"])
+def beds():
+  try:
+    db_connection = db.connect_db()  # Open our database connection
+
+    # Create and execute our queries
+    
+    # Query 1: Get all identifying information to populate the "View All Beds" table
+    query1 = "SELECT * FROM Bed;"
+    beds = db.query(db_connection, query1).fetchall()
+
+    # Query 2: Get all garden_id and name to populate the Garden dropdown
+    query2 = "SELECT garden_id, description FROM Garden ORDER BY description;"
+    gardens_dropdown = db.query(db_connection, query2).fetchall()
+
+    # Render the file, and also send the renderer
+    # a couple objects that contains information
+    return render_template(
+      "bed.j2", beds=beds, gardens_dropdown=gardens_dropdown
+    )
+
+  except Exception as e:
+    print(f"Error executing queries: {e}")
+    return(f"An error occurred while executing the database queries.", 500)
+
+  finally:
+    # Close the DB connection, if it exists
+    if "db_connection" in locals() and db_connection:
+        db_connection.close()
+
+# -------------- [ PLANT IN BED ] -------------- #
+@app.route("/plants-in-beds", methods=["GET"])
+def plants_in_beds():
+  try:
+    db_connection = db.connect_db()  # Open our database connection
+
+    # Create and execute our queries
+    
+    # Query 1: Get all identifying information to populate the "View All Of My Plants" table
+    query1 = "SELECT Plant.species, Plant.plant_category, Plant_In_Bed.id, \
+        Plant_In_Bed.date_planted, Plant_In_Bed.plant_quantity, Bed.bed_id, Bed.label \
+        FROM Plant_In_Bed \
+        INNER JOIN Plant ON Plant_In_Bed.plant_id = Plant.plant_id \
+        INNER JOIN Bed ON Plant_In_Bed.bed_id = Bed.bed_id \
+        ORDER BY Plant_In_Bed.date_planted DESC;"
+    my_plants = db.query(db_connection, query1).fetchall()
+
+    # Query 2: Get all bed_id and label to populate the Bed dropdown
+    query2 = "SELECT bed_id, label FROM Bed ORDER BY label;"
+    beds_dropdown = db.query(db_connection, query2).fetchall()
+
+    # Query 3: Get all plant_id and species to populate the Plant dropdown
+    query3 = "SELECT plant_id, species FROM Plant ORDER BY species;"
+    plants_dropdown = db.query(db_connection, query3).fetchall()
+
+    # Render the file, and also send the renderer
+    # a couple objects that contains information
+    return render_template(
+      "plant_in_bed.j2", my_plants=my_plants, beds_dropdown=beds_dropdown, plants_dropdown=plants_dropdown
+    )
+
+  except Exception as e:
+    print(f"Error executing queries: {e}")
+    return(f"An error occurred while executing the database queries.", 500)
+
+  finally:
+    # Close the DB connection, if it exists
+    if "db_connection" in locals() and db_connection:
+        db_connection.close()
+
+# NOTE TO SELF ADD CITATION FOR AI USAGE
+# PROMPT: Could you help me translate this into the flask routes: -- populate target plant's current data into Update Plant Form 
+#SELECT Plant_plant_id, bed_id, date_planted, plant_quantity
+#FROM Plant_In_Bed
+#WHERE id = :plant_in_bed_id_selected_from_all__of_my_plants_page;
+
+@app.route("/edit-plant-in-bed/<int:id>", methods=["GET"])
+def edit_plant_in_bed(id):
+    db_connection = None
+    try:
+        db_connection = db.connect_db()
+
+        # The query uses %s as a placeholder for the ID
+        query = "SELECT plant_id, bed_id, date_planted, plant_quantity \
+                 FROM Plant_In_Bed \
+                 WHERE id = %s;"
+        
+        # We pass the 'id' from the URL into the query execution
+        # Note: (id,) is a tuple, which the database connector requires
+        cursor = db.query(db_connection, query, (id,))
+        plant_data = cursor.fetchone() # Use fetchone() since we only want one row
+
+        # We also likely need these for the dropdowns in the update form
+        query2 = "SELECT plant_id, species FROM Plant;"
+        plants_dropdown = db.query(db_connection, query2).fetchall()
+
+        query3 = "SELECT bed_id, label FROM Bed;"
+        beds_dropdown = db.query(db_connection, query3).fetchall()
+
+        return render_template(
+            "update_plant_in_bed.j2", 
+            plant_data = plant_data, 
+            plants_dropdown=plants_dropdown, 
+            beds_dropdown=beds_dropdown
+        )
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return "Error fetching plant data.", 500
+    finally:
+        if db_connection:
+            db_connection.close()
+
+# -------------- [ USER ] -------------- #
+@app.route("/users", methods=["GET"])
+def users():
+  try:
+    db_connection = db.connect_db()  # Open our database connection
+
+    # Create and execute our queries
+    
+    # Query 1: Get all identifying information to populate the "View All Of My Plants" table
+    query = "SELECT * FROM User"
+    users = db.query(db_connection, query).fetchall()
+
+
+    # Render the file, and also send the renderer
+    # a couple objects that contains information
+    return render_template(
+      "user.j2", users=users
+    )
+
+  except Exception as e:
+    print(f"Error executing queries: {e}")
+    return(f"An error occurred while executing the database queries.", 500)
+
+  finally:
+    # Close the DB connection, if it exists
+    if "db_connection" in locals() and db_connection:
+        db_connection.close()
+
+@app.route("/edit-user/<int:id>", methods=["GET"])
+def edit_user(id):
+    db_connection = None
+    try:
+        db_connection = db.connect_db()
+
+        # The query uses %s as a placeholder for the ID
+        query = "SELECT * \
+                 FROM User \
+                 WHERE user_id = %s;"
+        
+        # We pass the 'id' from the URL into the query execution
+        # Note: (id,) is a tuple, which the database connector requires
+        cursor = db.query(db_connection, query, (id,))
+        user_data = cursor.fetchone() # Use fetchone() since we only want one row
+
+
+        return render_template(
+            "update_user.j2", 
+            user_data = user_data, 
+        )
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return "Error fetching plant data.", 500
+    finally:
+        if db_connection:
+            db_connection.close()
 
 # ########################################
 # ########## LISTENER
