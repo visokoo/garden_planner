@@ -1,6 +1,9 @@
 # ########################################
 # ########## SETUP
 
+# All code is based on the CS340 starter code, with the exception of the actual queries
+# used for querying the DB or otherwise noted.
+
 from flask import Flask, render_template, request, redirect
 import database.db_connector as db
 
@@ -51,7 +54,6 @@ def gardens():
   try:
     db_connection = db.connect_db()  # Open our database connection
 
-    # query1 = "SELECT * FROM Garden;"
     query1 = "SELECT Garden.garden_id, Garden.description, Garden.location, \
               CONCAT(User.first_name, ' ', User.last_name) AS owner \
               FROM Garden JOIN User on Garden.user_id = User.user_id;"
@@ -86,8 +88,8 @@ def beds():
     query1 = "SELECT * FROM Bed;"
     beds = db.query(db_connection, query1).fetchall()
 
-    # Query 2: Get all garden_id and name to populate the Garden dropdown
-    query2 = "SELECT garden_id, description FROM Garden ORDER BY description;"
+    # Query 2: Get all garden_id and location to populate the Garden dropdown
+    query2 = "SELECT garden_id, location FROM Garden ORDER BY location;"
     gardens_dropdown = db.query(db_connection, query2).fetchall()
 
     # Render the file, and also send the renderer
@@ -114,12 +116,12 @@ def plants_in_beds():
     # Create and execute our queries
     
     # Query 1: Get all identifying information to populate the "View All Of My Plants" table
-    query1 = "SELECT Plant.species, Plant.plant_category, Plant_In_Bed.id, \
-        Plant_In_Bed.date_planted, Plant_In_Bed.plant_quantity, Bed.bed_id, Bed.label \
-        FROM Plant_In_Bed \
-        INNER JOIN Plant ON Plant_In_Bed.plant_id = Plant.plant_id \
-        INNER JOIN Bed ON Plant_In_Bed.bed_id = Bed.bed_id \
-        ORDER BY Plant_In_Bed.date_planted DESC;"
+    query1 = "SELECT Plant_in_Bed.plant_id AS id, Plant.species, Plant.plant_category, \
+        Plant_in_Bed.date_planted, Plant_in_Bed.plant_quantity, Bed.label AS bed \
+        FROM Plant_in_Bed \
+        INNER JOIN Plant ON Plant_in_Bed.plant_id = Plant.plant_id \
+        INNER JOIN Bed ON Plant_in_Bed.bed_id = Bed.bed_id \
+        ORDER BY id;"
     my_plants = db.query(db_connection, query1).fetchall()
 
     # Query 2: Get all bed_id and label to populate the Bed dropdown
@@ -145,12 +147,12 @@ def plants_in_beds():
     if "db_connection" in locals() and db_connection:
         db_connection.close()
 
-# NOTE TO SELF ADD CITATION FOR AI USAGE
-# PROMPT: Could you help me translate this into the flask routes: -- populate target plant's current data into Update Plant Form 
-#SELECT Plant_plant_id, bed_id, date_planted, plant_quantity
-#FROM Plant_In_Bed
-#WHERE id = :plant_in_bed_id_selected_from_all__of_my_plants_page;
-
+# Citation for use of AI Tools:
+# Date: 2/09/2026
+# Prompts used to generate flask routes
+# Could you help me translate this into the flask routes:
+# -- populate target plant's current data into Update Plant Form
+# AI Source URL: https://gemini.google.com/
 @app.route("/edit-plant-in-bed/<int:id>", methods=["GET"])
 def edit_plant_in_bed(id):
     db_connection = None
@@ -159,7 +161,7 @@ def edit_plant_in_bed(id):
 
         # The query uses %s as a placeholder for the ID
         query = "SELECT plant_id, bed_id, date_planted, plant_quantity \
-                 FROM Plant_In_Bed \
+                 FROM Plant_in_Bed \
                  WHERE id = %s;"
         
         # We pass the 'id' from the URL into the query execution

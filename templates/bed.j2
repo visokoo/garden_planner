@@ -9,20 +9,29 @@
         {# For the table header row, we print the DB attribute names #}
         <tr>
             {% for key in beds[0].keys() %}
-            <th>{{ key }}</th>
+            {% if key == 'garden_id' %}
+                <th>garden</th>
+            {% else %}
+                <th>{{ key }}</th>
+            {% endif %}
             {% endfor %}
         </tr>
     </thead>
 
     <tbody>
-        {# For each row, print the id, fname, lname, homeworld and age #}
         {% for bed in beds %}
         <tr>
             <td>{{ bed.bed_id }}</td>
             <td>{{ bed.label }}</td>
             <td>{{ bed.length }}</td>
             <td>{{ bed.width }}</td>
-            <td>{{ bed.garden_id }}</td>
+            <td>
+            {% for garden in gardens_dropdown %}
+                {% if garden.garden_id == bed.garden_id %}
+                    {{ garden.location }}
+                {% endif %}
+            {% endfor %}
+            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -45,7 +54,7 @@
     <option value="NULL" selected>Select a Garden</option>
     {% for garden in gardens_dropdown %}
     <option value="{{ garden['garden_id'] }}"> 
-        {{ garden['description'] }} 
+        {{ garden['location'] }} 
     </option>
     {% endfor %}
 </select>
