@@ -57,12 +57,18 @@ SELECT garden_id, name FROM Garden ORDER BY name;
 -- get all identifying information to populate the "View All Users" table
 SELECT * FROM User;
 
--- add a new garden
-INSERT INTO Garden (name, location, User_user_id) 
-VALUES(:name_input, :location_input, :user_id_from_dropdown_input);
+-- add a new user
+INSERT INTO User (first_name, last_name) 
+VALUES(:first_name_input, :last_name_input);
 
--- get all user_id, first_name, last_name to populate the User dropdown
-SELECT * FROM User;
+-- update a user
+UPDATE User 
+SET first_name = :first_name_input, last_name = :last_name_input;
+WHERE id = :user_id_selected_from_all_users_page;
+
+-- delete a new user
+DELETE FROM User
+WHERE id = :user_id_selected_from_all_users_page;
 
 /* -------------- [ Plant_In_Bed - SELECT, INSERT, UPDATE, DELETE ] -------------- */
 
@@ -89,7 +95,7 @@ SET Plant_plant_id = :plant_id_from_dropdown_input,
 	Bed_bed_id = :bed_id_from_dropdown_input,
     date_planted = :date_input,
     plant_quantity = :plant_quantity_input
-WHERE id = :plant_in_bed_id_selected_from_all__of_my_plants_page;
+WHERE id = :plant_in_bed_id_selected_from_all_of_my_plants_page;
 
 
 -- populate target plant's current data into Update Plant Form 
@@ -100,3 +106,8 @@ WHERE id = :plant_in_bed_id_selected_from_all__of_my_plants_page;
 -- dis-associate a plant from a bed (M-to-M relationship deletion)
 DELETE FROM Plant_In_Bed 
 WHERE id = :plant_in_bed_id_selected_from_all__of_my_plants_page;
+-- delete a plant
+DELETE FROM Plant WHERE plant_id = :plant_id_selected_from_plant_page
+
+-- delete a garden
+DELETE FROM Garden WHERE garden_id = :garden_id_selected_from_garden_page

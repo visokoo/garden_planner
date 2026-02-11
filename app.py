@@ -22,21 +22,16 @@ def home():
     return "An error occurred while rendering the page.", 500
 
 # -------------- [ PLANT ] -------------- #
+
 @app.route("/plants", methods=["GET"])
 def plants():
   try:
     db_connection = db.connect_db()  # Open our database connection
 
-    # Create and execute our queries
-    # In query1, we use a JOIN clause to display the names of the homeworlds,
-    #       instead of just ID values
-    query1 = "SELECT Plant.plant_id, Plant.species, Plant.plant_category, \
-        Plant.water_requirements, Plant.sunlight, Plant.season, Plant.cycle, Plant.edible \
-        FROM Plant;"
+    query1 = "SELECT * FROM Plant;"
     plants = db.query(db_connection, query1).fetchall()
 
     # Render the plant.j2 file, and also send the renderer
-    # a couple objects that contains bsg_people and bsg_homeworld information
     return render_template(
       "plant.j2", plants=plants
     )
