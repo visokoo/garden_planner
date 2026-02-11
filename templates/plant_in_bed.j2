@@ -17,16 +17,14 @@
     </thead>
 
     <tbody>
-        {# For each row, print the id, fname, lname, homeworld and age #}
         {% for plant in my_plants %}
         <tr>
+            <td>{{ plant.id }}</td>
             <td>{{ plant.species }}</td>
             <td>{{ plant.plant_category }}</td>
-            <td>{{ plant.id }}</td>
             <td>{{ plant.date_planted }}</td>
             <td>{{ plant.plant_quantity }}</td>
-            <td>{{ plant.bed_id }}</td>
-            <td>{{ plant.label }}</td>
+            <td>{{ plant.bed }}</td>
             <td>
                 <a href="/edit-plant-in-bed/{{ plant.id }}">
                     <button type="button">Edit</button>
