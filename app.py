@@ -1,6 +1,9 @@
 # ########################################
 # ########## SETUP
 
+# All code is based on the CS340 starter code, with the exception of the actual queries
+# used for querying the DB or otherwise noted.
+
 from flask import Flask, render_template, request, redirect
 import database.db_connector as db
 
@@ -144,12 +147,12 @@ def plants_in_beds():
     if "db_connection" in locals() and db_connection:
         db_connection.close()
 
-# NOTE TO SELF ADD CITATION FOR AI USAGE
-# PROMPT: Could you help me translate this into the flask routes: -- populate target plant's current data into Update Plant Form 
-#SELECT Plant_plant_id, bed_id, date_planted, plant_quantity
-#FROM Plant_In_Bed
-#WHERE id = :plant_in_bed_id_selected_from_all__of_my_plants_page;
-
+# Citation for use of AI Tools:
+# Date: 2/09/2026
+# Prompts used to generate flask routes
+# Could you help me translate this into the flask routes:
+# -- populate target plant's current data into Update Plant Form
+# AI Source URL: https://gemini.google.com/
 @app.route("/edit-plant-in-bed/<int:id>", methods=["GET"])
 def edit_plant_in_bed(id):
     db_connection = None
