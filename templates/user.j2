@@ -1,0 +1,58 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h1>View All Users</h1>
+
+{# READ table #}
+<table>
+    <thead>
+        {# For the table header row, we print the DB attribute names #}
+        <tr>
+            {% for key in users[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {# For each row, print the id, fname, lname, homeworld and age #}
+        {% for user in users %}
+        <tr>
+            <td>{{ user.user_id }}</td>
+            <td>{{ user.first_name }}</td>
+            <td>{{ user.last_name }}</td>
+            <td>
+                <a href="/edit-user/{{ user.user_id }}">
+                    <button type="button">Edit</button>
+                </a>
+            </td>
+
+            {# DELETE form #}
+            <form id="delete_user_form">
+                <input type="hidden" name="delete_user_id" value="{{ user.user_id }}">
+                <td>
+                    <button type="submit">
+                        Delete
+                    </button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{# CREATE form #}
+<h2>Create a User</h2>
+<form class="cuForm" id="create_user_form">
+    <label for="create_user_first_name">First Name: </label>
+    <input type="text" name="create_user_first_name" id="create_user_first_name" required>
+
+    <label for="create_user_last_name">Last Name: </label>
+    <input type="text" name="create_user_last_name" id="create_user_last_name" required>
+
+    <input type="submit">
+</form>
+
+{% endblock %}

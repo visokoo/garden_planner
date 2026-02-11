@@ -1,0 +1,39 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h2>Update My Plant</h2>
+
+<form action="/update-plant-in-bed" method="POST" class="cuForm">
+    
+    <input type="hidden" name="id" value="{{ id }}">
+
+    <label for="update_plant">Plant Species: </label>
+    <select name="update_plant_species" id="update_plant_species" required>
+        {% for plant in plants_dropdown %}
+            <option value="{{ plant.plant_id }}" 
+                {% if plant.plant_id == plant_data.plant_id %} selected {% endif %}>
+                {{ plant.species }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="update_bed">Bed Label: </label>
+    <select name="bed_id" id="update_bed" required>
+        {% for bed in beds_dropdown %}
+            <option value="{{ bed.bed_id }}" 
+                {% if bed.bed_id == plant_data.bed_id %} selected {% endif %}>
+                {{ bed.label }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="update_date_planted">Date Planted: </label>
+    <input type="date" name="update_date_planted" id="update_date_planted" value="{{ plant_data.date_planted }}" required>
+
+    <label for="update_plant_quantity">Quantity: </label>
+    <input type="number" name="update_plant_quantity" id="update_plant_quantity" value="{{ plant_data.plant_quantity }}">
+
+    <button type="submit">Submit</button>
+</form>
+
+{% endblock %}

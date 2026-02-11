@@ -1,0 +1,20 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h2>Update My User</h2>
+
+<form action="/update-user" method="POST" class="cuForm">
+    
+    <input type="hidden" name="id" value="{{ id }}">
+
+    <label for="update_user_first_name">First Name: </label>
+    <input type="text" name="update_user_first_name" id="update_user_first_name" value="{{ user_data.first_name }}" required>
+
+    <label for="update_user_last_name">Last Name: </label>
+    <input type="text" name="update_user_last_name" id="update_user_last_name" value="{{ user_data.last_name }}" required>
+
+    <button type="submit">Submit</button>
+</form>
+
+{% endblock %}
+
