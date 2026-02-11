@@ -1,0 +1,78 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h1>View All Of My Plants</h1>
+
+{# READ table #}
+<table>
+    <thead>
+        {# For the table header row, we print the DB attribute names #}
+        <tr>
+            {% for key in my_plants[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {# For each row, print the id, fname, lname, homeworld and age #}
+        {% for plant in my_plants %}
+        <tr>
+            <td>{{ plant.species }}</td>
+            <td>{{ plant.plant_category }}</td>
+            <td>{{ plant.id }}</td>
+            <td>{{ plant.date_planted }}</td>
+            <td>{{ plant.plant_quantity }}</td>
+            <td>{{ plant.bed_id }}</td>
+            <td>{{ plant.label }}</td>
+            <td>
+                <a href="/edit-plant-in-bed/{{ plant.id }}">
+                    <button type="button">Edit</button>
+                </a>
+            </td>
+
+            {# DELETE form #}
+            <form id="delete_plant_form">
+                <input type="hidden" name="delete_plant_id" value="{{ plant.id }}">
+                <td>
+                    <button type="submit">
+                        Delete
+                    </button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{# CREATE form #}
+<h2>Add a new Plant</h2>
+<form class="cuForm" id="create_plant_form">
+    <label for="create_plant_species">Species: </label>
+    <select name="create_plant_species" id="create_plant_species" required>
+        <option value="NULL" selected>Select a Species</option>
+        {% for plant in plants_dropdown %}
+        <option value="{{plant['plant_id']}}" required>{{plant['species']}}</option>
+        {% endfor %}
+    </select>
+
+    <label for="create_plant_bed">Bed: </label>
+    <select name="create_plant_bed" id="create_plant_bed" required>
+        <option value="NULL" selected>Select a Bed</option>
+        {% for bed in beds_dropdown %}
+        <option value="{{bed['bed_id']}}" required>{{bed['label']}}</option>
+        {% endfor %}
+    </select>
+
+    <label for="create_date_planted">Date Planted: </label>
+    <input type="date" name="create_date_planted" id="create_date_planted" required>
+
+    <label for="create_plant_quantity">Quantity: </label>
+    <input type="number" name="create_plant_quantity" id="create_plant_quantity" required>
+
+
+    <input type="submit">
+</form>
+{% endblock %}

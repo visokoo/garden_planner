@@ -1,0 +1,56 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h1>View All Beds</h1>
+
+{# READ table #}
+<table>
+    <thead>
+        {# For the table header row, we print the DB attribute names #}
+        <tr>
+            {% for key in beds[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+
+    <tbody>
+        {# For each row, print the id, fname, lname, homeworld and age #}
+        {% for bed in beds %}
+        <tr>
+            <td>{{ bed.bed_id }}</td>
+            <td>{{ bed.label }}</td>
+            <td>{{ bed.length }}</td>
+            <td>{{ bed.width }}</td>
+            <td>{{ bed.garden_id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{# CREATE form #}
+<h2>Create a Bed</h2>
+<form class="cuForm" id="create_bed_form">
+    <label for="create_bed_label">Label: </label>
+    <input type="text" name="create_bed_label" id="create_bed_label" required>
+
+    <label for="create_bed_length">Length: </label>
+    <input type="number" name="create_bed_length" id="create_bed_length">
+
+    <label for="create_bed_width">Width: </label>
+    <input type="number" name="create_bed_width" id="create_bed_width">
+
+    <label for="create_bed_garden">Garden: </label>
+    <select name="create_bed_garden" id="create_bed_garden" required>
+    <option value="NULL" selected>Select a Garden</option>
+    {% for garden in gardens_dropdown %}
+    <option value="{{ garden['garden_id'] }}"> 
+        {{ garden['description'] }} 
+    </option>
+    {% endfor %}
+</select>
+
+    <input type="submit">
+</form>
+
+{% endblock %}
