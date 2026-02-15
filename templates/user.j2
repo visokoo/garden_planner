@@ -9,7 +9,7 @@
         {# For the table header row, we print the DB attribute names #}
         <tr>
             {% for key in users[0].keys() %}
-            <th>{{ key }}</th>
+                <th>{{ key }}</th>
             {% endfor %}
             <th></th>
             <th></th>
@@ -20,18 +20,18 @@
         {# For each row, print the id, fname, lname, homeworld and age #}
         {% for user in users %}
         <tr>
-            <td>{{ user.user_id }}</td>
-            <td>{{ user.first_name }}</td>
-            <td>{{ user.last_name }}</td>
+            <td>{{ user.id }}</td>
+            <td>{{ user['first name'] }}</td>
+            <td>{{ user['last name'] }}</td>
             <td>
-                <a href="/edit-user/{{ user.user_id }}">
+                <a href="/edit-user/{{ user.id }}">
                     <button type="button">Edit</button>
                 </a>
             </td>
 
             {# DELETE form #}
             <form id="delete_user_form">
-                <input type="hidden" name="delete_user_id" value="{{ user.user_id }}">
+                <input type="hidden" name="delete_user_id" value="{{ user.id }}">
                 <td>
                     <button type="submit">
                         Delete

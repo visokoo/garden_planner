@@ -31,7 +31,7 @@
     <input type="date" name="update_date_planted" id="update_date_planted" value="{{ plant_data.date_planted }}" required>
 
     <label for="update_plant_quantity">Quantity: </label>
-    <input type="number" name="update_plant_quantity" id="update_plant_quantity" value="{{ plant_data.plant_quantity }}">
+    <input type="number" name="update_plant_quantity" id="update_plant_quantity" min="0" value="{{ plant_data.plant_quantity }}">
 
     <button type="submit">Submit</button>
 </form>
