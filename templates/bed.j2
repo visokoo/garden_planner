@@ -21,13 +21,13 @@
     <tbody>
         {% for bed in beds %}
         <tr>
-            <td>{{ bed.bed_id }}</td>
+            <td>{{ bed.id }}</td>
             <td>{{ bed.label }}</td>
-            <td>{{ bed.length }}</td>
-            <td>{{ bed.width }}</td>
+            <td>{{ bed['length (inches)'] }}</td>
+            <td>{{ bed['width (inches)'] }}</td>
             <td>
             {% for garden in gardens_dropdown %}
-                {% if garden.garden_id == bed.garden_id %}
+                {% if garden.garden_id == bed.garden %}
                     {{ garden.location }}
                 {% endif %}
             {% endfor %}

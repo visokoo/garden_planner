@@ -31,7 +31,8 @@ def plants():
   try:
     db_connection = db.connect_db()  # Open our database connection
 
-    query1 = "SELECT * FROM Plant;"
+    query1 = "SELECT plant.plant_id AS id, plant.species, plant.plant_category AS 'plant category', plant.water_requirements AS 'water requirements', \
+              plant.sunlight, plant.season, plant.cycle, plant.edible FROM Plant;"
     plants = db.query(db_connection, query1).fetchall()
 
     # Render the plant.j2 file, and also send the renderer
@@ -54,7 +55,7 @@ def gardens():
   try:
     db_connection = db.connect_db()  # Open our database connection
 
-    query1 = "SELECT Garden.garden_id, Garden.description, Garden.location, \
+    query1 = "SELECT Garden.garden_id AS id, Garden.description, Garden.location, \
               CONCAT(User.first_name, ' ', User.last_name) AS owner \
               FROM Garden JOIN User on Garden.user_id = User.user_id;"
     gardens = db.query(db_connection, query1).fetchall()
@@ -85,7 +86,7 @@ def beds():
     # Create and execute our queries
     
     # Query 1: Get all identifying information to populate the "View All Beds" table
-    query1 = "SELECT * FROM Bed;"
+    query1 = "SELECT Bed.bed_id AS id, Bed.label, Bed.length AS 'length (inches)', Bed.width AS 'width (inches)', Bed.garden_id AS garden FROM Bed;"
     beds = db.query(db_connection, query1).fetchall()
 
     # Query 2: Get all garden_id and location to populate the Garden dropdown
@@ -116,8 +117,8 @@ def plants_in_beds():
     # Create and execute our queries
     
     # Query 1: Get all identifying information to populate the "View All Of My Plants" table
-    query1 = "SELECT Plant_in_Bed.plant_id AS id, Plant.species, Plant.plant_category, \
-        Plant_in_Bed.date_planted, Plant_in_Bed.plant_quantity, Bed.label AS bed \
+    query1 = "SELECT Plant_in_Bed.plant_id AS id, Plant.species, Plant.plant_category AS 'plant category', \
+        Plant_in_Bed.date_planted AS 'date planted', Plant_in_Bed.plant_quantity AS 'plant quantity', Bed.label AS bed \
         FROM Plant_in_Bed \
         INNER JOIN Plant ON Plant_in_Bed.plant_id = Plant.plant_id \
         INNER JOIN Bed ON Plant_in_Bed.bed_id = Bed.bed_id \
@@ -199,7 +200,7 @@ def users():
     # Create and execute our queries
     
     # Query 1: Get all identifying information to populate the "View All Of My Plants" table
-    query = "SELECT * FROM User"
+    query = "SELECT user.user_id as id, user.first_name AS 'first name', user.last_name AS 'last name' FROM User"
     users = db.query(db_connection, query).fetchall()
 
 

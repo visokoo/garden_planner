@@ -9,11 +9,7 @@
         {# For the table header row, we print the DB attribute names #}
         <tr>
             {% for key in gardens[0].keys() %}
-            {% if key == 'user_id' %}
-                <th>owner</th>
-            {% else %}
                 <th>{{ key }}</th>
-            {% endif %}
             {% endfor %}
             <th></th>
         </tr>
@@ -22,7 +18,7 @@
     <tbody>
         {% for garden in gardens %}
         <tr>
-            <td>{{ garden.garden_id }}</td>
+            <td>{{ garden.id }}</td>
             <td>{{ garden.description }}</td>
             <td>{{ garden.location }}</td>
             <td>{{ garden.owner }}</td>

@@ -18,10 +18,10 @@
     <tbody>
         {% for plant in plants %}
         <tr>
-            <td>{{ plant.plant_id }}</td>
+            <td>{{ plant.id }}</td>
             <td>{{ plant.species }}</td>
-            <td>{{ plant.plant_category }}</td>
-            <td>{{ plant.water_requirements }}</td>
+            <td>{{ plant['plant category'] }}</td>
+            <td>{{ plant['water requirements'] }}</td>
             <td>{{ plant.sunlight }}</td>
             <td>{{ plant.season }}</td>
             <td>{{ plant.cycle }}</td>
@@ -33,7 +33,7 @@
 
             {# DELETE form #}
             <form id="delete_plant_form">
-                <input type="hidden" name="delete_plant_id" value="{{ plant.plant_id }}">
+                <input type="hidden" name="delete_plant_id" value="{{ plant.id }}">
                 <td>
                     <button type="submit">Delete</button>
                 </td>

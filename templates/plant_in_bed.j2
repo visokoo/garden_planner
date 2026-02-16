@@ -21,9 +21,9 @@
         <tr>
             <td>{{ plant.id }}</td>
             <td>{{ plant.species }}</td>
-            <td>{{ plant.plant_category }}</td>
-            <td>{{ plant.date_planted }}</td>
-            <td>{{ plant.plant_quantity }}</td>
+            <td>{{ plant['plant category'] }}</td>
+            <td>{{ plant['date planted'] }}</td>
+            <td>{{ plant['plant quantity'] }}</td>
             <td>{{ plant.bed }}</td>
             <td>
                 <a href="/edit-plant-in-bed/{{ plant.id }}">
@@ -68,7 +68,7 @@
     <input type="date" name="create_date_planted" id="create_date_planted" required>
 
     <label for="create_plant_quantity">Quantity: </label>
-    <input type="number" name="create_plant_quantity" id="create_plant_quantity" required>
+    <input type="number" name="create_plant_quantity" id="create_plant_quantity" min="0" required>
 
 
     <input type="submit">
