@@ -8,8 +8,8 @@ GROUP 125
 /* -------------- [ Plant - SELECT, INSERT, DELETE ] -------------- */
 
 -- select all from Plant
-SELECT plant.plant_id AS id, plant.species, plant.plant_category AS 'plant category', plant.water_requirements AS 'water requirements', \
-       plant.sunlight, plant.season, plant.cycle, plant.edible FROM Plant;;
+SELECT Plant.plant_id AS id, Plant.species, Plant.plant_category AS 'plant category', Plant.water_requirements AS 'water requirements', \
+       Plant.sunlight, Plant.season, Plant.cycle, Plant.edible FROM Plant;
 
 -- insert new plant into Plant
 INSERT INTO Plant (species, plant_category, water_requirements, sunlight, season, cycle, edible)
@@ -55,7 +55,7 @@ SELECT garden_id, location FROM Garden ORDER BY location;
 /* -------------- [ USER - SELECT, INSERT, UPDATE, DELETE ] -------------- */
 
 -- get all identifying information to populate the "View All Users" table
-SELECT user.user_id as id, user.first_name AS 'first name', user.last_name AS 'last name' FROM User;
+SELECT User.user_id as id, User.first_name AS 'first name', User.last_name AS 'last name' FROM User;
 
 -- add a new user
 INSERT INTO User (first_name, last_name) 

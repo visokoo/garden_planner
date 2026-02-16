@@ -31,8 +31,8 @@ def plants():
   try:
     db_connection = db.connect_db()  # Open our database connection
 
-    query1 = "SELECT plant.plant_id AS id, plant.species, plant.plant_category AS 'plant category', plant.water_requirements AS 'water requirements', \
-              plant.sunlight, plant.season, plant.cycle, plant.edible FROM Plant;"
+    query1 = "SELECT Plant.plant_id AS id, Plant.species, Plant.plant_category AS 'plant category', Plant.water_requirements AS 'water requirements', \
+              Plant.sunlight, Plant.season, Plant.cycle, Plant.edible FROM Plant;"
     plants = db.query(db_connection, query1).fetchall()
 
     # Render the plant.j2 file, and also send the renderer
@@ -200,7 +200,7 @@ def users():
     # Create and execute our queries
     
     # Query 1: Get all identifying information to populate the "View All Of My Plants" table
-    query = "SELECT user.user_id as id, user.first_name AS 'first name', user.last_name AS 'last name' FROM User"
+    query = "SELECT User.user_id as id, User.first_name AS 'first name', User.last_name AS 'last name' FROM User"
     users = db.query(db_connection, query).fetchall()
 
 
