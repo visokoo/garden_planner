@@ -50,7 +50,7 @@
 <form class="cuForm" id="create_plant_form" method="POST">
     <label for="create_plant_species">Species: </label>
     <select name="create_plant_species" id="create_plant_species" required>
-        <option value="NULL" selected>Select a Species</option>
+        <option value="NULL" disabled selected hidden>Select a Species</option>
         {% for plant in plants_dropdown %}
         <option value="{{plant['plant_id']}}" required>{{plant['species']}}</option>
         {% endfor %}
@@ -58,7 +58,7 @@
 
     <label for="create_plant_bed">Bed: </label>
     <select name="create_plant_bed" id="create_plant_bed" required>
-        <option value="NULL" selected>Select a Bed</option>
+        <option value="NULL" disabled selected hidden>Select a Bed</option>
         {% for bed in beds_dropdown %}
         <option value="{{bed['bed_id']}}" required>{{bed['label']}}</option>
         {% endfor %}
