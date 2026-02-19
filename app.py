@@ -14,6 +14,13 @@ app = Flask(__name__)
 # ########################################
 # ########## ROUTE HANDLERS
 
+#   _    _  ____  __  __ ______ 
+#  | |  | |/ __ \|  \/  |  ____|
+#  | |__| | |  | | \  / | |__   
+#  |  __  | |  | | |\/| |  __|  
+#  | |  | | |__| | |  | | |____ 
+#  |_|  |_|\____/|_|  |_|______|                             
+
 # READ ROUTES
 @app.route("/", methods=["GET"])
 def home():
@@ -24,7 +31,12 @@ def home():
     print(f"Error rendering page: {e}")
     return "An error occurred while rendering the page.", 500
 
-# -------------- [ PLANT ] -------------- #
+#   _____  _               _   _ _______ 
+#  |  __ \| |        /\   | \ | |__   __|
+#  | |__) | |       /  \  |  \| |  | |   
+#  |  ___/| |      / /\ \ | . ` |  | |   
+#  | |    | |____ / ____ \| |\  |  | |   
+#  |_|    |______/_/    \_\_| \_|  |_|             
 
 @app.route("/plants", methods=["GET", "POST"])
 def plants():
@@ -61,7 +73,13 @@ def plants():
     if "db_connection" in locals() and db_connection:
         db_connection.close()
 
-# -------------- [ GARDEN ] -------------- #
+#    _____          _____  _____  ______ _   _ 
+#   / ____|   /\   |  __ \|  __ \|  ____| \ | |
+#  | |  __   /  \  | |__) | |  | | |__  |  \| |
+#  | | |_ | / /\ \ |  _  /| |  | |  __| | . ` |
+#  | |__| |/ ____ \| | \ \| |__| | |____| |\  |
+#   \_____/_/    \_\_|  \_\_____/|______|_| \_|
+                                                                         
 @app.route("/gardens", methods=["GET", "POST"])
 def gardens():
   try:
@@ -95,7 +113,13 @@ def gardens():
     if "db_connection" in locals() and db_connection:
         db_connection.close()
 
-# -------------- [ BED ] -------------- #
+#   ____  ______ _____  
+#  |  _ \|  ____|  __ \ 
+#  | |_) | |__  | |  | |
+#  |  _ <|  __| | |  | |
+#  | |_) | |____| |__| |
+#  |____/|______|_____/ 
+                                
 @app.route("/beds", methods=["GET", "POST"])
 def beds():
   try:
@@ -128,7 +152,18 @@ def beds():
     if "db_connection" in locals() and db_connection:
         db_connection.close()
 
-# -------------- [ PLANT IN BED ] -------------- #
+#   _____  _               _   _ _______   _____ _   _   ____  ______ _____  
+#  |  __ \| |        /\   | \ | |__   __| |_   _| \ | | |  _ \|  ____|  __ \ 
+#  | |__) | |       /  \  |  \| |  | |      | | |  \| | | |_) | |__  | |  | |
+#  |  ___/| |      / /\ \ | . ` |  | |      | | | . ` | |  _ <|  __| | |  | |
+#  | |    | |____ / ____ \| |\  |  | |     _| |_| |\  | | |_) | |____| |__| |
+#  |_|    |______/_/    \_\_| \_|  |_|    |_____|_| \_| |____/|______|_____/ 
+
+# Citation for use of AI Tools:
+# Date: 2/19/2026
+# Prompts used to generate flask routes:
+# I need help refactoring the Insert route to utilize cursor.nextset() to consume result sets from MySQL stored procedures in Python.
+# AI Source URL: https://gemini.google.com/                                                                                                                                                   
 @app.route("/plants-in-beds", methods=["GET", "POST"])
 def plants_in_beds():
   try:
@@ -147,9 +182,22 @@ def plants_in_beds():
       bed = request.form.get('create_plant_bed')
       date_planted = request.form.get('create_date_planted')
       plant_quantity = request.form.get('create_plant_quantity')
+        
       cursor = db_connection.cursor()
-      cursor.callproc('sp_insert_into_plant_in_bed', [plant, bed, date_planted, plant_quantity, 0]) # 0 is a placeholder for the returned id
+        
+      # 1. Call the procedure
+      # Note: Ensure the list matches the number of IN parameters in your SQL
+      cursor.callproc('sp_insert_into_plant_in_bed', [plant, bed, date_planted, plant_quantity, 0])
+        
+      # 2. Consume results to prevent "Commands out of sync"
+      while cursor.nextset():
+            pass
+            
+      # 3. Commit the transaction
       db_connection.commit()
+        
+      # 4. Close cursor to be tidy
+      cursor.close()  
     
     my_plants = db.query(db_connection, query1).fetchall()
     beds_dropdown = db.query(db_connection, query2).fetchall()
@@ -213,7 +261,50 @@ def edit_plant_in_bed(id):
         if db_connection:
             db_connection.close()
 
-# -------------- [ USER ] -------------- #
+# Citation for use of AI Tools:
+# Date: 2/19/2026
+# Prompts used to generate flask routes:
+# 1. Help me write a flask app route to delete a plant from plant_in_bed using a stored procedure.
+# 2. I need help writing a delete route for the plant-in-bed object (refactoring existing table and route code).
+# 3. I need help troubleshooting MySQL Error 1305 (Procedure does not exist) and Error 2014 (Commands out of sync).
+# AI Source URL: https://gemini.google.com/
+@app.route("/delete-plant-in-bed/<int:id>", methods=["POST"])
+def delete_plant_in_bed(id):
+    db_connection = None
+    try:
+        db_connection = db.connect_db()
+        cursor = db_connection.cursor()
+
+        # 1. Call the procedure
+        cursor.callproc('sp_delete_plant_in_bed', [id])
+        
+        # 2. CONSUME the results (This fixes the 'out of sync' error)
+        # This loops through any SELECT statements inside your procedure
+        while cursor.nextset():
+            pass
+
+        # 3. Commit after clearing results
+        db_connection.commit()
+
+        # 4. Close cursor to be tidy
+        cursor.close()  
+        
+        return redirect("/plants-in-beds")
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return f"Error deleting plant with ID {id}.", 500
+    finally:
+        if db_connection:
+            db_connection.close()
+
+#   _    _  _____ ______ _____  
+#  | |  | |/ ____|  ____|  __ \ 
+#  | |  | | (___ | |__  | |__) |
+#  | |  | |\___ \|  __| |  _  / 
+#  | |__| |____) | |____| | \ \ 
+#   \____/|_____/|______|_|  \_\
+                                         
 @app.route("/users", methods=["GET", "POST"])
 def users():
   try:
@@ -270,6 +361,13 @@ def edit_user(id):
         if db_connection:
             db_connection.close()
 
+#   _____  ______  _____ ______ _______ 
+#  |  __ \|  ____|/ ____|  ____|__   __|
+#  | |__) | |__  | (___ | |__     | |   
+#  |  _  /|  __|  \___ \|  __|    | |   
+#  | | \ \| |____ ____) | |____   | |   
+#  |_|  \_\______|_____/|______|  |_|   
+                                                                    
 @app.route("/reset", methods=["GET"])
 def reset():
     db_connection = None
