@@ -15,10 +15,6 @@ DROP PROCEDURE  IF EXISTS sp_load_garden_planner_db;
 DELIMITER //
   CREATE PROCEDURE sp_load_garden_planner_db()
   BEGIN
-      -- Create database and use it
-      -- un comment these if NOT using the CS340 database
-      -- CREATE DATABASE IF NOT EXISTS `movie`;
-      -- USE `movie`;
   
     SET FOREIGN_KEY_CHECKS=0;
     SET AUTOCOMMIT = 0;

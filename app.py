@@ -4,7 +4,7 @@
 # All code is based on the CS340 starter code, with the exception of the actual queries
 # used for querying the DB or otherwise noted.
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import database.db_connector as db
 
 PORT = 8000
@@ -56,6 +56,7 @@ def plants():
       cursor = db_connection.cursor()
       cursor.callproc('sp_insert_into_plant', [species, plant_category, water_requirements, sunlight, season, cycle, edible, 0]) # 0 is a placeholder for the returned id
       db_connection.commit()
+      return redirect(url_for("plants"))
 
     plants = db.query(db_connection, query1).fetchall()
 
@@ -96,6 +97,7 @@ def gardens():
       cursor = db_connection.cursor()
       cursor.callproc('sp_insert_into_garden', [description, location, user_name, 0]) # 0 is a placeholder for the returned id
       db_connection.commit()
+      return redirect(url_for("gardens"))
 
     gardens = db.query(db_connection, query1).fetchall()
     users = db.query(db_connection, query2).fetchall()
@@ -135,6 +137,7 @@ def beds():
       cursor = db_connection.cursor()
       cursor.callproc('sp_insert_into_bed', [label, length, width, garden_id, 0]) # 0 is a placeholder for the returned id
       db_connection.commit()
+      return redirect(url_for("beds"))
 
     beds = db.query(db_connection, query1).fetchall()
     gardens_dropdown = db.query(db_connection, query2).fetchall()
@@ -198,6 +201,7 @@ def plants_in_beds():
         
       # 4. Close cursor to be tidy
       cursor.close()  
+      return redirect(url_for("plants_in_beds"))
     
     my_plants = db.query(db_connection, query1).fetchall()
     beds_dropdown = db.query(db_connection, query2).fetchall()
