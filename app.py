@@ -26,13 +26,25 @@ def home():
 
 # -------------- [ PLANT ] -------------- #
 
-@app.route("/plants", methods=["GET"])
+@app.route("/plants", methods=["GET", "POST"])
 def plants():
   try:
     db_connection = db.connect_db()  # Open our database connection
-
     query1 = "SELECT Plant.plant_id AS id, Plant.species, Plant.plant_category AS 'plant category', Plant.water_requirements AS 'water requirements', \
               Plant.sunlight, Plant.season, Plant.cycle, Plant.edible FROM Plant;"
+
+    if request.method == "POST":
+      species = request.form.get('create_plant_species')
+      plant_category = request.form.get('create_plant_category')
+      water_requirements = request.form.get('create_water_requirements')
+      sunlight = request.form.get('create_sunlight')
+      season = request.form.get('create_season')
+      cycle = request.form.get('create_cycle')
+      edible = request.form.get('edible')
+      cursor = db_connection.cursor()
+      cursor.callproc('sp_insert_into_plant', [species, plant_category, water_requirements, sunlight, season, cycle, edible, 0]) # 0 is a placeholder for the returned id
+      db_connection.commit()
+
     plants = db.query(db_connection, query1).fetchall()
 
     # Render the plant.j2 file, and also send the renderer
@@ -50,20 +62,26 @@ def plants():
         db_connection.close()
 
 # -------------- [ GARDEN ] -------------- #
-@app.route("/gardens", methods=["GET"])
+@app.route("/gardens", methods=["GET", "POST"])
 def gardens():
   try:
     db_connection = db.connect_db()  # Open our database connection
-
     query1 = "SELECT Garden.garden_id AS id, Garden.description, Garden.location, \
-              CONCAT(User.first_name, ' ', User.last_name) AS owner \
-              FROM Garden JOIN User on Garden.user_id = User.user_id;"
-    gardens = db.query(db_connection, query1).fetchall()
-
+             CONCAT(User.first_name, ' ', User.last_name) AS owner \
+             FROM Garden JOIN User on Garden.user_id = User.user_id;"
     query2 = "SELECT User.user_id, CONCAT(User.first_name, ' ', User.last_name) AS owner FROM User;"
+
+    if request.method == "POST":
+      description = request.form.get('create_garden_description')
+      location = request.form.get('create_garden_location')
+      user_name = request.form.get('create_garden_owner')
+      cursor = db_connection.cursor()
+      cursor.callproc('sp_insert_into_garden', [description, location, user_name, 0]) # 0 is a placeholder for the returned id
+      db_connection.commit()
+
+    gardens = db.query(db_connection, query1).fetchall()
     users = db.query(db_connection, query2).fetchall()
 
-    # Render the garden.j2 file, and also send the renderer
     return render_template(
       "garden.j2", gardens=gardens, users=users
     )
@@ -78,23 +96,25 @@ def gardens():
         db_connection.close()
 
 # -------------- [ BED ] -------------- #
-@app.route("/beds", methods=["GET"])
+@app.route("/beds", methods=["GET", "POST"])
 def beds():
   try:
     db_connection = db.connect_db()  # Open our database connection
-
-    # Create and execute our queries
-    
-    # Query 1: Get all identifying information to populate the "View All Beds" table
     query1 = "SELECT Bed.bed_id AS id, Bed.label, Bed.length AS 'length (inches)', Bed.width AS 'width (inches)', Bed.garden_id AS garden FROM Bed;"
-    beds = db.query(db_connection, query1).fetchall()
-
-    # Query 2: Get all garden_id and location to populate the Garden dropdown
     query2 = "SELECT garden_id, location FROM Garden ORDER BY location;"
+
+    if request.method == "POST":
+      label = request.form.get('create_bed_label')
+      length = request.form.get('create_bed_length')
+      width = request.form.get('create_bed_width')
+      garden_id = request.form.get('create_bed_garden')
+      cursor = db_connection.cursor()
+      cursor.callproc('sp_insert_into_bed', [label, length, width, garden_id, 0]) # 0 is a placeholder for the returned id
+      db_connection.commit()
+
+    beds = db.query(db_connection, query1).fetchall()
     gardens_dropdown = db.query(db_connection, query2).fetchall()
 
-    # Render the file, and also send the renderer
-    # a couple objects that contains information
     return render_template(
       "bed.j2", beds=beds, gardens_dropdown=gardens_dropdown
     )
@@ -109,28 +129,30 @@ def beds():
         db_connection.close()
 
 # -------------- [ PLANT IN BED ] -------------- #
-@app.route("/plants-in-beds", methods=["GET"])
+@app.route("/plants-in-beds", methods=["GET", "POST"])
 def plants_in_beds():
   try:
     db_connection = db.connect_db()  # Open our database connection
-
-    # Create and execute our queries
-    
-    # Query 1: Get all identifying information to populate the "View All Of My Plants" table
-    query1 = "SELECT Plant_in_Bed.plant_id AS id, Plant.species, Plant.plant_category AS 'plant category', \
+    query1 = "SELECT Plant_in_Bed.id AS id, Plant.species, Plant.plant_category AS 'plant category', \
         Plant_in_Bed.date_planted AS 'date planted', Plant_in_Bed.plant_quantity AS 'plant quantity', Bed.label AS bed \
         FROM Plant_in_Bed \
         INNER JOIN Plant ON Plant_in_Bed.plant_id = Plant.plant_id \
         INNER JOIN Bed ON Plant_in_Bed.bed_id = Bed.bed_id \
         ORDER BY id;"
-    my_plants = db.query(db_connection, query1).fetchall()
-
-    # Query 2: Get all bed_id and label to populate the Bed dropdown
     query2 = "SELECT bed_id, label FROM Bed ORDER BY label;"
-    beds_dropdown = db.query(db_connection, query2).fetchall()
-
-    # Query 3: Get all plant_id and species to populate the Plant dropdown
     query3 = "SELECT plant_id, species FROM Plant ORDER BY species;"
+
+    if request.method == "POST":
+      plant = request.form.get('create_plant_species')
+      bed = request.form.get('create_plant_bed')
+      date_planted = request.form.get('create_date_planted')
+      plant_quantity = request.form.get('create_plant_quantity')
+      cursor = db_connection.cursor()
+      cursor.callproc('sp_insert_into_plant_in_bed', [plant, bed, date_planted, plant_quantity, 0]) # 0 is a placeholder for the returned id
+      db_connection.commit()
+    
+    my_plants = db.query(db_connection, query1).fetchall()
+    beds_dropdown = db.query(db_connection, query2).fetchall()
     plants_dropdown = db.query(db_connection, query3).fetchall()
 
     # Render the file, and also send the renderer
@@ -186,26 +208,27 @@ def edit_plant_in_bed(id):
 
     except Exception as e:
         print(f"Error: {e}")
-        return "Error fetching plant data.", 500
+        return "Error updating plant data.", 500
     finally:
         if db_connection:
             db_connection.close()
 
 # -------------- [ USER ] -------------- #
-@app.route("/users", methods=["GET"])
+@app.route("/users", methods=["GET", "POST"])
 def users():
   try:
     db_connection = db.connect_db()  # Open our database connection
-
-    # Create and execute our queries
-    
-    # Query 1: Get all identifying information to populate the "View All Of My Plants" table
     query = "SELECT User.user_id as id, User.first_name AS 'first name', User.last_name AS 'last name' FROM User"
+
+    if request.method == "POST":
+      first_name = request.form.get('create_user_first_name')
+      last_name = request.form.get('create_user_last_name')
+      cursor = db_connection.cursor()
+      cursor.callproc('sp_insert_into_user', [first_name, last_name, 0]) # 0 is a placeholder for the returned id
+      db_connection.commit()
+
     users = db.query(db_connection, query).fetchall()
 
-
-    # Render the file, and also send the renderer
-    # a couple objects that contains information
     return render_template(
       "user.j2", users=users
     )
@@ -217,7 +240,7 @@ def users():
   finally:
     # Close the DB connection, if it exists
     if "db_connection" in locals() and db_connection:
-        db_connection.close()
+      db_connection.close()
 
 @app.route("/edit-user/<int:id>", methods=["GET"])
 def edit_user(id):
@@ -235,7 +258,6 @@ def edit_user(id):
         cursor = db.query(db_connection, query, (id,))
         user_data = cursor.fetchone() # Use fetchone() since we only want one row
 
-
         return render_template(
             "update_user.j2", 
             user_data = user_data, 
@@ -243,7 +265,25 @@ def edit_user(id):
 
     except Exception as e:
         print(f"Error: {e}")
-        return "Error fetching plant data.", 500
+        return "Error fetching user data.", 500
+    finally:
+        if db_connection:
+            db_connection.close()
+
+@app.route("/reset", methods=["GET"])
+def reset():
+    db_connection = None
+    try:
+        db_connection = db.connect_db()
+
+        query = "CALL sp_load_garden_planner_db();"
+        
+        db.query(db_connection, query)
+        return redirect("/")
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return "Error resetting DB.", 500
     finally:
         if db_connection:
             db_connection.close()
