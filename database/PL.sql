@@ -1,6 +1,16 @@
 -- OSU CS340
 -- Garden Planner Stored Procedures
- 
+
+/*
+   _____ ______ _______   _    _ _____    _______       ____  _      ______  _____ 
+  / ____|  ____|__   __| | |  | |  __ \  |__   __|/\   |  _ \| |    |  ____|/ ____|
+ | (___ | |__     | |    | |  | | |__) |    | |  /  \  | |_) | |    | |__  | (___  
+  \___ \|  __|    | |    | |  | |  ___/     | | / /\ \ |  _ <| |    |  __|  \___ \ 
+  ____) | |____   | |    | |__| | |         | |/ ____ \| |_) | |____| |____ ____) |
+ |_____/|______|  |_|     \____/|_|         |_/_/    \_\____/|______|______|_____/ 
+                                                                                                                                                                   
+*/
+
 DROP PROCEDURE  IF EXISTS sp_load_garden_planner_db;
 DELIMITER //
   CREATE PROCEDURE sp_load_garden_planner_db()
@@ -142,6 +152,16 @@ DELIMITER //
   END //
 DELIMITER ;
 
+/*
+  _____ _   _  _____ ______ _____ _______ 
+ |_   _| \ | |/ ____|  ____|  __ \__   __|
+   | | |  \| | (___ | |__  | |__) | | |   
+   | | | . ` |\___ \|  __| |  _  /  | |   
+  _| |_| |\  |____) | |____| | \ \  | |   
+ |_____|_| \_|_____/|______|_|  \_\ |_|   
+                                                                                  
+*/
+
 /* Inserts a new plant into Plant */
 DROP PROCEDURE  IF EXISTS sp_insert_into_plant;
 DELIMITER //
@@ -165,7 +185,7 @@ DELIMITER //
   END //
 DELIMITER ;
 
-/* Inserts a new plant into Plant */
+/* Inserts a new plant into Plant_In_Bed */
 DROP PROCEDURE  IF EXISTS sp_insert_into_plant_in_bed;
 DELIMITER //
   CREATE PROCEDURE sp_insert_into_plant_in_bed(
@@ -240,4 +260,99 @@ DELIMITER //
 
     SET new_bed_id = LAST_INSERT_ID();
   END //
+DELIMITER ;
+
+/*
+  _____  ______ _      ______ _______ ______ 
+ |  __ \|  ____| |    |  ____|__   __|  ____|
+ | |  | | |__  | |    | |__     | |  | |__   
+ | |  | |  __| | |    |  __|    | |  |  __|  
+ | |__| | |____| |____| |____   | |  | |____ 
+ |_____/|______|______|______|  |_|  |______|
+                                                                                       
+*/
+
+/* Delete plant */
+DROP PROCEDURE IF EXISTS sp_delete_plant;
+DELIMITER //
+CREATE PROCEDURE sp_delete_plant(IN p_plant_id INT)
+BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+	ROLLBACK;
+	SELECT 'Error! Plant not deleted.' AS Result;
+  END;
+ START TRANSACTION;
+  DELETE FROM Plant WHERE plant_id = p_plant_id;
+  COMMIT;
+  SELECT 'Plant deleted successfully.' AS Result;
+END //
+DELIMITER ;
+
+/* Delete plant in bed */
+DROP PROCEDURE IF EXISTS sp_delete_plant_in_bed;
+DELIMITER //
+CREATE PROCEDURE sp_delete_plant_in_bed(IN p_id INT)
+BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+	ROLLBACK;
+	SELECT 'Error! Plant_In_Bed not deleted.' AS Result;
+  END;
+ START TRANSACTION;
+  DELETE FROM Plant_In_Bed WHERE id = p_id;
+  COMMIT;
+  SELECT 'Plant_In_Bed deleted successfully.' AS Result;
+END //
+DELIMITER ;
+
+/* Delete user */
+DROP PROCEDURE IF EXISTS sp_delete_user;
+DELIMITER //
+CREATE PROCEDURE sp_delete_user(IN p_user_id INT)
+BEGIN
+ DECLARE EXIT HANDLER FOR SQLEXCEPTION
+ BEGIN
+ ROLLBACK;
+ SELECT 'Error! User not deleted.' AS Result;
+ END;
+START TRANSACTION;
+ DELETE FROM User WHERE user_id = p_user_id;
+ COMMIT;
+ SELECT 'User deleted successfully.' AS Result;
+END //
+DELIMITER ;
+
+/* Delete garden */
+DROP PROCEDURE IF EXISTS sp_delete_garden;
+DELIMITER //
+CREATE PROCEDURE sp_delete_garden(IN p_garden_id INT)
+BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+	ROLLBACK;
+	SELECT 'Error! Garden not deleted.' AS Result;
+  END;
+ START TRANSACTION;
+  DELETE FROM Garden WHERE garden_id = p_garden_id;
+  COMMIT;
+  SELECT 'Garden deleted successfully.' AS Result;
+END //
+DELIMITER ;
+
+/* Delete bed */
+DROP PROCEDURE IF EXISTS sp_delete_bed;
+DELIMITER //
+CREATE PROCEDURE sp_delete_bed(IN p_bed_id INT)
+BEGIN
+ DECLARE EXIT HANDLER FOR SQLEXCEPTION
+ BEGIN
+ ROLLBACK;
+ SELECT 'Error! Bed not deleted.' AS Result;
+ END;
+START TRANSACTION;
+ DELETE FROM Bed WHERE bed_id = p_bed_id;
+ COMMIT;
+ SELECT 'Bed deleted successfully.' AS Result;
+END //
 DELIMITER ;

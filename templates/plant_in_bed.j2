@@ -4,13 +4,28 @@
 <h1>View All Of My Plants</h1>
 
 {# READ table #}
+{# 
+    Citation for use of AI Tools:
+    Date: 2/19/2026
+    Prompts used to refactor Jinja table:
+    I need help resolving the 'tuple object has no element 0' error.
+    AI Source URL: https://gemini.google.com/ 
+#}
 <table>
     <thead>
-        {# For the table header row, we print the DB attribute names #}
         <tr>
-            {% for key in my_plants[0].keys() %}
-            <th>{{ key }}</th>
-            {% endfor %}
+            {% if my_plants and my_plants|length > 0 %}
+                {% for key in my_plants[0].keys() %}
+                <th>{{ key }}</th>
+                {% endfor %}
+            {% else %}
+                <th>id</th>
+                <th>species</th>
+                <th>category</th>
+                <th>date planted</th>
+                <th>quantity</th>
+                <th>bed</th>
+            {% endif %}
             <th></th>
             <th></th>
         </tr>
@@ -32,10 +47,18 @@
             </td>
 
             {# DELETE form #}
-            <form id="delete_plant_form">
+            {# 
+                Citation for use of AI Tools:
+                Date: 2/19/2026
+                Prompts used to refactor Jinja table and delete form:
+                1. I need help writing a delete route for the plant-in-bed object (formatting the HTML table and form).
+                2. Help me format the delete button inside the table.
+                AI Source URL: https://gemini.google.com/ 
+            #}
+            <form id="delete_plant_form" action="/delete-plant-in-bed/{{ plant.id }}" method="POST">
                 <input type="hidden" name="delete_plant_id" value="{{ plant.id }}">
                 <td>
-                    <button type="submit">
+                    <button type="submit" onclick="return confirm('Are you sure?')">
                         Delete
                     </button>
                 </td>
