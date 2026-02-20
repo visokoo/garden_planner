@@ -92,15 +92,15 @@ SELECT plant_id, species FROM Plant ORDER BY species;
 
 -- update a plant in bed
 UPDATE Plant_in_Bed
-SET Plant_plant_id = :plant_id_from_dropdown_input, 
-	Bed_bed_id = :bed_id_from_dropdown_input,
+SET plant_id = :plant_id_from_dropdown_input,
+    bed_id = :bed_id_from_dropdown_input,
     date_planted = :date_input,
     plant_quantity = :plant_quantity_input
 WHERE id = :plant_in_bed_id_selected_from_all_of_my_plants_page;
 
 
 -- populate target plant's current data into Update Plant Form 
-SELECT Plant_plant_id, Bed_bed_id, date_planted, plant_quantity
+SELECT plant_id, bed_id, date_planted, plant_quantity
 FROM Plant_in_Bed
 WHERE id = :plant_in_bed_id_selected_from_all__of_my_plants_page;
 
