@@ -44,14 +44,14 @@
     <input type="text" name="create_bed_label" id="create_bed_label" required>
 
     <label for="create_bed_length">Length: </label>
-    <input type="number" name="create_bed_length" id="create_bed_length">
+    <input type="number" name="create_bed_length" id="create_bed_length" required>
 
     <label for="create_bed_width">Width: </label>
-    <input type="number" name="create_bed_width" id="create_bed_width">
+    <input type="number" name="create_bed_width" id="create_bed_width" required>
 
     <label for="create_bed_garden">Garden: </label>
     <select name="create_bed_garden" id="create_bed_garden" required>
-    <option value="NULL" selected>Select a Garden</option>
+    <option value="" disabled selected hidden>Select a Garden</option>
     {% for garden in gardens_dropdown %}
     <option value="{{ garden['garden_id'] }}"> 
         {{ garden['location'] }} 
