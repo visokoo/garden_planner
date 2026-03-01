@@ -185,9 +185,9 @@ def plants_in_beds():
       bed = request.form.get('create_plant_bed')
       date_planted = request.form.get('create_date_planted')
       plant_quantity = request.form.get('create_plant_quantity')
-        
+
       cursor = db_connection.cursor()
-        
+
       # 1. Call the procedure
       # Note: Ensure the list matches the number of IN parameters in your SQL
       cursor.callproc('sp_insert_into_plant_in_bed', [plant, bed, date_planted, plant_quantity, 0])
@@ -195,7 +195,7 @@ def plants_in_beds():
       # 2. Consume results to prevent "Commands out of sync"
       while cursor.nextset():
             pass
-            
+
       # 3. Commit the transaction
       db_connection.commit()
         
@@ -228,42 +228,54 @@ def plants_in_beds():
 # Could you help me translate this into the flask routes:
 # -- populate target plant's current data into Update Plant Form
 # AI Source URL: https://gemini.google.com/
-@app.route("/edit-plant-in-bed/<int:id>", methods=["GET"])
+@app.route("/edit-plant-in-bed/<int:id>", methods=["GET", "POST"])
 def edit_plant_in_bed(id):
-    db_connection = None
-    try:
-        db_connection = db.connect_db()
+  try:
+    db_connection = db.connect_db()
+    if request.method == "POST":
+      plant = request.form.get('update_plant_species')
+      bed = request.form.get('bed_id')
+      date_planted = request.form.get('update_date_planted')
+      plant_quantity = request.form.get('update_plant_quantity')
 
-        # The query uses %s as a placeholder for the ID
-        query = "SELECT plant_id, bed_id, date_planted, plant_quantity \
-                 FROM Plant_in_Bed \
-                 WHERE id = %s;"
-        
-        # We pass the 'id' from the URL into the query execution
-        # Note: (id,) is a tuple, which the database connector requires
-        cursor = db.query(db_connection, query, (id,))
-        plant_data = cursor.fetchone() # Use fetchone() since we only want one row
+      cursor = db_connection.cursor()
 
-        # We also likely need these for the dropdowns in the update form
-        query2 = "SELECT plant_id, species FROM Plant;"
-        plants_dropdown = db.query(db_connection, query2).fetchall()
+      cursor.callproc('sp_update_plant_in_bed', [id, plant, bed, date_planted, plant_quantity])
 
-        query3 = "SELECT bed_id, label FROM Bed;"
-        beds_dropdown = db.query(db_connection, query3).fetchall()
+      while cursor.nextset():
+        pass
 
-        return render_template(
-            "update_plant_in_bed.j2", 
-            plant_data = plant_data, 
-            plants_dropdown=plants_dropdown, 
-            beds_dropdown=beds_dropdown
-        )
+      db_connection.commit()
 
-    except Exception as e:
-        print(f"Error: {e}")
-        return "Error updating plant data.", 500
-    finally:
-        if db_connection:
-            db_connection.close()
+      cursor.close()
+      return redirect(url_for("plants_in_beds"))
+
+    query = "SELECT plant_id, bed_id, date_planted, plant_quantity \
+              FROM Plant_in_Bed \
+              WHERE id = %s;"
+
+    cursor = db.query(db_connection, query, (id,))
+    plant_data = cursor.fetchone()
+
+    query2 = "SELECT plant_id, species FROM Plant;"
+    plants_dropdown = db.query(db_connection, query2).fetchall()
+
+    query3 = "SELECT bed_id, label FROM Bed;"
+    beds_dropdown = db.query(db_connection, query3).fetchall()
+
+    return render_template(
+      "update_plant_in_bed.j2",
+      plant_data = plant_data,
+      plants_dropdown=plants_dropdown,
+      beds_dropdown=beds_dropdown
+    )
+
+  except Exception as e:
+    print(f"Error: {e}")
+    return "Error updating plant data.", 500
+  finally:
+    if db_connection:
+        db_connection.close()
 
 # Citation for use of AI Tools:
 # Date: 2/19/2026
@@ -274,7 +286,6 @@ def edit_plant_in_bed(id):
 # AI Source URL: https://gemini.google.com/
 @app.route("/delete-plant-in-bed/<int:id>", methods=["POST"])
 def delete_plant_in_bed(id):
-    db_connection = None
     try:
         db_connection = db.connect_db()
         cursor = db_connection.cursor()
@@ -339,7 +350,6 @@ def users():
 
 @app.route("/edit-user/<int:id>", methods=["GET"])
 def edit_user(id):
-    db_connection = None
     try:
         db_connection = db.connect_db()
 
@@ -374,7 +384,6 @@ def edit_user(id):
                                                                     
 @app.route("/reset", methods=["GET"])
 def reset():
-    db_connection = None
     try:
         db_connection = db.connect_db()
 

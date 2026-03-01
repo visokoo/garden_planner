@@ -352,3 +352,31 @@ START TRANSACTION;
  SELECT 'Bed deleted successfully.' AS Result;
 END //
 DELIMITER ;
+
+/* Update Plant_in_Bed SP */
+DROP PROCEDURE IF EXISTS sp_update_plant_in_bed;
+DELIMITER //
+CREATE PROCEDURE sp_update_plant_in_bed(
+  IN p_plant_in_bed_id INT,
+  IN p_plant_id INT,
+  IN p_bed_id INT,
+  IN p_date DATE,
+  IN p_quantity INT
+)
+BEGIN
+ DECLARE EXIT HANDLER FOR SQLEXCEPTION
+ BEGIN
+ ROLLBACK;
+ SELECT 'Error! Plant in Bed item not updated.' AS Result;
+ END;
+START TRANSACTION;
+ UPDATE Plant_in_Bed SET
+ plant_id = p_plant_id,
+ bed_id = p_bed_id,
+ date_planted = p_date,
+ plant_quantity = p_quantity
+ WHERE id = p_plant_in_bed_id;
+ COMMIT;
+ SELECT 'Plant in Bed item successfully updated.' AS Result;
+END //
+DELIMITER ;
