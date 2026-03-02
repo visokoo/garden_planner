@@ -1,99 +1,102 @@
 {% extends "main.j2" %}
 {% block content %}
 
-<h1>View All Of My Plants</h1>
+<div class="page">
+    <h1>View All Of My Plants</h1>
 
-{# READ table #}
-{# 
-    Citation for use of AI Tools:
-    Date: 2/19/2026
-    Prompts used to refactor Jinja table:
-    I need help resolving the 'tuple object has no element 0' error.
-    AI Source URL: https://gemini.google.com/ 
-#}
-<table>
-    <thead>
-        <tr>
-            {% if my_plants and my_plants|length > 0 %}
-                {% for key in my_plants[0].keys() %}
-                <th>{{ key }}</th>
-                {% endfor %}
-            {% else %}
-                <th>id</th>
-                <th>species</th>
-                <th>category</th>
-                <th>date planted</th>
-                <th>quantity</th>
-                <th>bed</th>
-            {% endif %}
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
+    {# READ table #}
+    {# 
+        Citation for use of AI Tools:
+        Date: 2/19/2026
+        Prompts used to refactor Jinja table:
+        I need help resolving the 'tuple object has no element 0' error.
+        AI Source URL: https://gemini.google.com/ 
+    #}
+    <table>
+        <thead>
+            <tr>
+                {% if my_plants and my_plants|length > 0 %}
+                    {% for key in my_plants[0].keys() %}
+                    <th>{{ key }}</th>
+                    {% endfor %}
+                {% else %}
+                    <th>id</th>
+                    <th>species</th>
+                    <th>category</th>
+                    <th>date planted</th>
+                    <th>quantity</th>
+                    <th>bed</th>
+                {% endif %}
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
 
-    <tbody>
-        {% for plant in my_plants %}
-        <tr>
-            <td>{{ plant.id }}</td>
-            <td>{{ plant.species }}</td>
-            <td>{{ plant['plant category'] }}</td>
-            <td>{{ plant['date planted'] }}</td>
-            <td>{{ plant['plant quantity'] }}</td>
-            <td>{{ plant.bed }}</td>
-            <td>
-                <a href="/edit-plant-in-bed/{{ plant.id }}">
-                    <button type="button">Edit</button>
-                </a>
-            </td>
-
-            {# DELETE form #}
-            {# 
-                Citation for use of AI Tools:
-                Date: 2/19/2026
-                Prompts used to refactor Jinja table and delete form:
-                1. I need help writing a delete route for the plant-in-bed object (formatting the HTML table and form).
-                2. Help me format the delete button inside the table.
-                AI Source URL: https://gemini.google.com/ 
-            #}
-            <form id="delete_plant_form" action="/delete-plant-in-bed/{{ plant.id }}" method="POST">
-                <input type="hidden" name="delete_plant_id" value="{{ plant.id }}">
+        <tbody>
+            {% for plant_in_bed in my_plants %}
+            <tr>
+                <td>{{ plant_in_bed.id }}</td>
+                <td>{{ plant_in_bed.species }}</td>
+                <td>{{ plant_in_bed['plant category'] }}</td>
+                <td>{{ plant_in_bed['date planted'] }}</td>
+                <td>{{ plant_in_bed['plant quantity'] }}</td>
+                <td>{{ plant_in_bed.bed }}</td>
                 <td>
-                    <button type="submit" onclick="return confirm('Are you sure?')">
-                        Delete
-                    </button>
+                    <a href="/edit-plant-in-bed/{{ plant_in_bed.id }}">
+                        <button type="button">Edit</button>
+                    </a>
                 </td>
-            </form>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
-{# CREATE form #}
-<h2>Add a new Plant</h2>
-<form class="cuForm" id="create_plant_form" method="POST">
-    <label for="create_plant_species">Species: </label>
-    <select name="create_plant_species" id="create_plant_species" required>
-        <option value="NULL" disabled selected hidden>Select a Species</option>
-        {% for plant in plants_dropdown %}
-        <option value="{{plant['plant_id']}}" required>{{plant['species']}}</option>
-        {% endfor %}
-    </select>
+                {# DELETE form #}
+                {# 
+                    Citation for use of AI Tools:
+                    Date: 2/19/2026
+                    Prompts used to refactor Jinja table and delete form:
+                    1. I need help writing a delete route for the plant-in-bed object (formatting the HTML table and form).
+                    2. Help me format the delete button inside the table.
+                    AI Source URL: https://gemini.google.com/ 
+                #}
+                <form id="delete_plant_in_bed_form" action="/delete-plant-in-bed/{{ plant_in_bed.id }}" method="POST">
+                    <input type="hidden" name="delete_plant_id" value="{{ plant_in_bed.id }}">
+                    <td>
+                        <button type="submit" onclick="return confirm('Are you sure?')">
+                            Delete
+                        </button>
+                    </td>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-    <label for="create_plant_bed">Bed: </label>
-    <select name="create_plant_bed" id="create_plant_bed" required>
-        <option value="NULL" disabled selected hidden>Select a Bed</option>
-        {% for bed in beds_dropdown %}
-        <option value="{{bed['bed_id']}}" required>{{bed['label']}}</option>
-        {% endfor %}
-    </select>
+    {# CREATE form #}
+    <h2>Add a new Plant</h2>
+    <form class="cuForm" id="create_plant_form" method="POST">
+        <label for="create_plant_species">Species: </label>
+        <select name="create_plant_species" id="create_plant_species" required>
+            <option value="NULL" disabled selected hidden>Select a Species</option>
+            {% for plant in plants_dropdown %}
+            <option value="{{plant['plant_id']}}" required>{{plant['species']}}</option>
+            {% endfor %}
+        </select>
 
-    <label for="create_date_planted">Date Planted: </label>
-    <input type="date" name="create_date_planted" id="create_date_planted" required>
+        <label for="create_plant_bed">Bed: </label>
+        <select name="create_plant_bed" id="create_plant_bed" required>
+            <option value="NULL" disabled selected hidden>Select a Bed</option>
+            {% for bed in beds_dropdown %}
+            <option value="{{bed['bed_id']}}" required>{{bed['label']}}</option>
+            {% endfor %}
+        </select>
 
-    <label for="create_plant_quantity">Quantity: </label>
-    <input type="number" name="create_plant_quantity" id="create_plant_quantity" min="0" required>
+        <label for="create_date_planted">Date Planted: </label>
+        <input type="date" name="create_date_planted" id="create_date_planted" required>
+
+        <label for="create_plant_quantity">Quantity: </label>
+        <input type="number" name="create_plant_quantity" id="create_plant_quantity" min="0" required>
 
 
-    <input type="submit">
-</form>
+        <input type="submit">
+    </form>
+</div>
+
 {% endblock %}

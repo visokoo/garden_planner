@@ -52,6 +52,10 @@ VALUES(:label_input, :length_input, :width_input, :garden_id_from_dropdown_input
 -- get all garden_id and name to populate the Garden dropdown
 SELECT garden_id, location FROM Garden ORDER BY location;
 
+-- delete a bed
+DELETE FROM Bed
+WHERE id = :bed_id_selected_from_bed_page;
+
 /* -------------- [ USER - SELECT, INSERT, UPDATE, DELETE ] -------------- */
 
 -- get all identifying information to populate the "View All Users" table
@@ -66,7 +70,7 @@ UPDATE User
 SET first_name = :first_name_input, last_name = :last_name_input;
 WHERE id = :user_id_selected_from_all_users_page;
 
--- delete a new user
+-- delete a user
 DELETE FROM User
 WHERE id = :user_id_selected_from_all_users_page;
 
@@ -107,8 +111,3 @@ WHERE id = :plant_in_bed_id_selected_from_all__of_my_plants_page;
 -- dis-associate a plant from a bed (M-to-M relationship deletion)
 DELETE FROM Plant_in_Bed 
 WHERE id = :plant_in_bed_id_selected_from_all__of_my_plants_page;
--- delete a plant
-DELETE FROM Plant WHERE plant_id = :plant_id_selected_from_plant_page;
-
--- delete a garden
-DELETE FROM Garden WHERE garden_id = :garden_id_selected_from_garden_page;

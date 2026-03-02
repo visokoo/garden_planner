@@ -356,3 +356,55 @@ START TRANSACTION;
  SELECT 'Bed deleted successfully.' AS Result;
 END //
 DELIMITER ;
+
+/*
+  _    _ _____  _____       _______ ______ 
+ | |  | |  __ \|  __ \   /\|__   __|  ____|
+ | |  | | |__) | |  | | /  \  | |  | |__   
+ | |  | |  ___/| |  | |/ /\ \ | |  |  __|  
+ | |__| | |    | |__| / ____ \| |  | |____ 
+  \____/|_|    |_____/_/    \_\_|  |______|
+                                           
+*/
+
+-- Citation for use of AI Tools:
+-- Date: 3/01/2026
+-- Prompt used to generate stored procedure:
+-- How do I turn this <Update method in DML> into a stored procedure?
+-- AI Source URL: https://claude.ai/
+DROP PROCEDURE IF EXISTS sp_update_user;
+DELIMITER //
+CREATE PROCEDURE sp_update_user (
+    IN p_first_name VARCHAR(255),
+    IN p_last_name  VARCHAR(255),
+    IN p_user_id    INT
+)
+BEGIN
+    UPDATE User
+    SET first_name = p_first_name,
+        last_name  = p_last_name
+    WHERE user_id = p_user_id;
+END //
+
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS sp_update_plant_in_bed;
+DELIMITER //
+CREATE PROCEDURE sp_update_plant_in_bed (
+    IN p_plant_id        INT,
+    IN p_bed_id          INT,
+    IN p_date_planted    DATE,
+    IN p_plant_quantity  INT,
+    IN p_plant_in_bed_id INT
+)
+BEGIN
+    UPDATE Plant_in_Bed
+    SET plant_id = p_plant_id,
+        bed_id     = p_bed_id,
+        date_planted   = p_date_planted,
+        plant_quantity = p_plant_quantity
+    WHERE id = p_plant_in_bed_id;
+END //
+
+DELIMITER ;

@@ -73,6 +73,36 @@ def plants():
     if "db_connection" in locals() and db_connection:
         db_connection.close()
 
+@app.route("/delete-plant/<int:id>", methods=["POST"])
+def delete_plant(id):
+    db_connection = None
+    try:
+        db_connection = db.connect_db()
+        cursor = db_connection.cursor()
+
+        # 1. Call the procedure
+        cursor.callproc('sp_delete_plant', [id])
+        
+        # 2. CONSUME the results (This fixes the 'out of sync' error)
+        # This loops through any SELECT statements inside your procedure
+        while cursor.nextset():
+            pass
+
+        # 3. Commit after clearing results
+        db_connection.commit()
+
+        # 4. Close cursor to be tidy
+        cursor.close()  
+        
+        return redirect("/plants")
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return f"Error deleting plant with ID {id}.", 500
+    finally:
+        if db_connection:
+            db_connection.close()
+
 #    _____          _____  _____  ______ _   _ 
 #   / ____|   /\   |  __ \|  __ \|  ____| \ | |
 #  | |  __   /  \  | |__) | |  | | |__  |  \| |
@@ -113,6 +143,35 @@ def gardens():
     if "db_connection" in locals() and db_connection:
         db_connection.close()
 
+@app.route("/delete-garden/<int:id>", methods=["POST"])
+def delete_garden(id):
+    db_connection = None
+    try:
+        db_connection = db.connect_db()
+        cursor = db_connection.cursor()
+
+        # 1. Call the procedure
+        cursor.callproc('sp_delete_garden', [id])
+        
+        # 2. CONSUME the results (This fixes the 'out of sync' error)
+        # This loops through any SELECT statements inside your procedure
+        while cursor.nextset():
+            pass
+
+        # 3. Commit after clearing results
+        db_connection.commit()
+
+        # 4. Close cursor to be tidy
+        cursor.close()  
+        
+        return redirect("/gardens")
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return f"Error deleting garden with ID {id}.", 500
+    finally:
+        if db_connection:
+            db_connection.close()
 #   ____  ______ _____  
 #  |  _ \|  ____|  __ \ 
 #  | |_) | |__  | |  | |
@@ -151,6 +210,36 @@ def beds():
     # Close the DB connection, if it exists
     if "db_connection" in locals() and db_connection:
         db_connection.close()
+
+@app.route("/delete-bed/<int:id>", methods=["POST"])
+def delete_bed(id):
+    db_connection = None
+    try:
+        db_connection = db.connect_db()
+        cursor = db_connection.cursor()
+
+        # 1. Call the procedure
+        cursor.callproc('sp_delete_bed', [id])
+        
+        # 2. CONSUME the results (This fixes the 'out of sync' error)
+        # This loops through any SELECT statements inside your procedure
+        while cursor.nextset():
+            pass
+
+        # 3. Commit after clearing results
+        db_connection.commit()
+
+        # 4. Close cursor to be tidy
+        cursor.close()  
+        
+        return redirect("/beds")
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return f"Error deleting bed with ID {id}.", 500
+    finally:
+        if db_connection:
+            db_connection.close()
 
 #   _____  _               _   _ _______   _____ _   _   ____  ______ _____  
 #  |  __ \| |        /\   | \ | |__   __| |_   _| \ | | |  _ \|  ____|  __ \ 
@@ -224,12 +313,33 @@ def plants_in_beds():
 # Could you help me translate this into the flask routes:
 # -- populate target plant's current data into Update Plant Form
 # AI Source URL: https://gemini.google.com/
-@app.route("/edit-plant-in-bed/<int:id>", methods=["GET"])
+
+# Date: 3/01/2026
+# Prompt used to generate flask route for updating a plant in bed:
+# So I need help with some routes. I have a route that sets up a form that will
+# allow users to update a plant. I need to create another route that will actually
+# call the update stored procedure. Or should I do that within this route?
+# AI Source URL: https://claude.ai/
+@app.route("/edit-plant-in-bed/<int:id>", methods=["POST", "GET"])
 def edit_plant_in_bed(id):
     db_connection = None
     try:
         db_connection = db.connect_db()
 
+        # Handle the form SUBMISSION (POST)
+        if request.method == "POST":
+            plant_id       = request.form["plant_id"]
+            bed_id         = request.form["bed_id"]
+            date_planted   = request.form["date_planted"]
+            plant_quantity = request.form["plant_quantity"]
+
+            query = "CALL sp_update_plant_in_bed(%s, %s, %s, %s, %s);"
+            db.query(db_connection, query, (plant_id, bed_id, date_planted, plant_quantity, id))
+            db_connection.commit()
+
+            return redirect("/plants-in-beds")  # redirect back to your plants page
+
+        # Handle loading the form (GET)
         # The query uses %s as a placeholder for the ID
         query = "SELECT plant_id, bed_id, date_planted, plant_quantity \
                  FROM Plant_in_Bed \
@@ -249,6 +359,7 @@ def edit_plant_in_bed(id):
 
         return render_template(
             "update_plant_in_bed.j2", 
+            id = id,
             plant_data = plant_data, 
             plants_dropdown=plants_dropdown, 
             beds_dropdown=beds_dropdown
@@ -333,12 +444,24 @@ def users():
     if "db_connection" in locals() and db_connection:
       db_connection.close()
 
-@app.route("/edit-user/<int:id>", methods=["GET"])
+@app.route("/edit-user/<int:id>", methods=["POST", "GET"])
 def edit_user(id):
     db_connection = None
     try:
         db_connection = db.connect_db()
 
+        # Handle the form SUBMISSION (POST)
+        if request.method == "POST":
+            first_name       = request.form["first_name"]
+            last_name         = request.form["last_name"]
+
+            query = "CALL sp_update_user(%s, %s, %s);"
+            db.query(db_connection, query, (first_name, last_name, id))
+            db_connection.commit()
+
+            return redirect("/users")  # redirect back to your plants page
+
+        # Handle loading the form (GET)
         # The query uses %s as a placeholder for the ID
         query = "SELECT * \
                  FROM User \
@@ -351,12 +474,43 @@ def edit_user(id):
 
         return render_template(
             "update_user.j2", 
+            id = id,
             user_data = user_data, 
         )
 
     except Exception as e:
         print(f"Error: {e}")
         return "Error fetching user data.", 500
+    finally:
+        if db_connection:
+            db_connection.close()
+
+@app.route("/delete-user/<int:id>", methods=["POST"])
+def delete_user(id):
+    db_connection = None
+    try:
+        db_connection = db.connect_db()
+        cursor = db_connection.cursor()
+
+        # 1. Call the procedure
+        cursor.callproc('sp_delete_user', [id])
+        
+        # 2. CONSUME the results (This fixes the 'out of sync' error)
+        # This loops through any SELECT statements inside your procedure
+        while cursor.nextset():
+            pass
+
+        # 3. Commit after clearing results
+        db_connection.commit()
+
+        # 4. Close cursor to be tidy
+        cursor.close()  
+        
+        return redirect("/users")
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return f"Error deleting user with ID {id}.", 500
     finally:
         if db_connection:
             db_connection.close()
