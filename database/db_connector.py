@@ -1,3 +1,5 @@
+# All code is based on the CS340 starter codee unless otherwise noted.
+
 import MySQLdb
 
 # Database credentials

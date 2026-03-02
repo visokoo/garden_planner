@@ -4,7 +4,7 @@
 # All code is based on the CS340 starter code, with the exception of the actual queries
 # used for querying the DB or otherwise noted.
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import database.db_connector as db
 
 PORT = 8000
@@ -56,6 +56,7 @@ def plants():
       cursor = db_connection.cursor()
       cursor.callproc('sp_insert_into_plant', [species, plant_category, water_requirements, sunlight, season, cycle, edible, 0]) # 0 is a placeholder for the returned id
       db_connection.commit()
+      return redirect(url_for("plants"))
 
     plants = db.query(db_connection, query1).fetchall()
 
@@ -126,6 +127,7 @@ def gardens():
       cursor = db_connection.cursor()
       cursor.callproc('sp_insert_into_garden', [description, location, user_name, 0]) # 0 is a placeholder for the returned id
       db_connection.commit()
+      return redirect(url_for("gardens"))
 
     gardens = db.query(db_connection, query1).fetchall()
     users = db.query(db_connection, query2).fetchall()
@@ -194,6 +196,7 @@ def beds():
       cursor = db_connection.cursor()
       cursor.callproc('sp_insert_into_bed', [label, length, width, garden_id, 0]) # 0 is a placeholder for the returned id
       db_connection.commit()
+      return redirect(url_for("beds"))
 
     beds = db.query(db_connection, query1).fetchall()
     gardens_dropdown = db.query(db_connection, query2).fetchall()
@@ -271,9 +274,9 @@ def plants_in_beds():
       bed = request.form.get('create_plant_bed')
       date_planted = request.form.get('create_date_planted')
       plant_quantity = request.form.get('create_plant_quantity')
-        
+
       cursor = db_connection.cursor()
-        
+
       # 1. Call the procedure
       # Note: Ensure the list matches the number of IN parameters in your SQL
       cursor.callproc('sp_insert_into_plant_in_bed', [plant, bed, date_planted, plant_quantity, 0])
@@ -281,12 +284,13 @@ def plants_in_beds():
       # 2. Consume results to prevent "Commands out of sync"
       while cursor.nextset():
             pass
-            
+
       # 3. Commit the transaction
       db_connection.commit()
         
       # 4. Close cursor to be tidy
       cursor.close()  
+      return redirect(url_for("plants_in_beds"))
     
     my_plants = db.query(db_connection, query1).fetchall()
     beds_dropdown = db.query(db_connection, query2).fetchall()
@@ -322,9 +326,13 @@ def plants_in_beds():
 # AI Source URL: https://claude.ai/
 @app.route("/edit-plant-in-bed/<int:id>", methods=["POST", "GET"])
 def edit_plant_in_bed(id):
-    db_connection = None
-    try:
-        db_connection = db.connect_db()
+  try:
+    db_connection = db.connect_db()
+    if request.method == "POST":
+      plant = request.form.get('update_plant_species')
+      bed = request.form.get('bed_id')
+      date_planted = request.form.get('update_date_planted')
+      plant_quantity = request.form.get('update_plant_quantity')
 
         # Handle the form SUBMISSION (POST)
         if request.method == "POST":
@@ -350,12 +358,10 @@ def edit_plant_in_bed(id):
         cursor = db.query(db_connection, query, (id,))
         plant_data = cursor.fetchone() # Use fetchone() since we only want one row
 
-        # We also likely need these for the dropdowns in the update form
-        query2 = "SELECT plant_id, species FROM Plant;"
-        plants_dropdown = db.query(db_connection, query2).fetchall()
+      cursor.callproc('sp_update_plant_in_bed', [id, plant, bed, date_planted, plant_quantity])
 
-        query3 = "SELECT bed_id, label FROM Bed;"
-        beds_dropdown = db.query(db_connection, query3).fetchall()
+      while cursor.nextset():
+        pass
 
         return render_template(
             "update_plant_in_bed.j2", 
@@ -365,12 +371,35 @@ def edit_plant_in_bed(id):
             beds_dropdown=beds_dropdown
         )
 
-    except Exception as e:
-        print(f"Error: {e}")
-        return "Error updating plant data.", 500
-    finally:
-        if db_connection:
-            db_connection.close()
+      cursor.close()
+      return redirect(url_for("plants_in_beds"))
+
+    query = "SELECT plant_id, bed_id, date_planted, plant_quantity \
+              FROM Plant_in_Bed \
+              WHERE id = %s;"
+
+    cursor = db.query(db_connection, query, (id,))
+    plant_data = cursor.fetchone()
+
+    query2 = "SELECT plant_id, species FROM Plant;"
+    plants_dropdown = db.query(db_connection, query2).fetchall()
+
+    query3 = "SELECT bed_id, label FROM Bed;"
+    beds_dropdown = db.query(db_connection, query3).fetchall()
+
+    return render_template(
+      "update_plant_in_bed.j2",
+      plant_data = plant_data,
+      plants_dropdown=plants_dropdown,
+      beds_dropdown=beds_dropdown
+    )
+
+  except Exception as e:
+    print(f"Error: {e}")
+    return "Error updating plant data.", 500
+  finally:
+    if db_connection:
+        db_connection.close()
 
 # Citation for use of AI Tools:
 # Date: 2/19/2026
@@ -381,7 +410,6 @@ def edit_plant_in_bed(id):
 # AI Source URL: https://gemini.google.com/
 @app.route("/delete-plant-in-bed/<int:id>", methods=["POST"])
 def delete_plant_in_bed(id):
-    db_connection = None
     try:
         db_connection = db.connect_db()
         cursor = db_connection.cursor()
@@ -446,7 +474,6 @@ def users():
 
 @app.route("/edit-user/<int:id>", methods=["POST", "GET"])
 def edit_user(id):
-    db_connection = None
     try:
         db_connection = db.connect_db()
 
@@ -524,7 +551,6 @@ def delete_user(id):
                                                                     
 @app.route("/reset", methods=["GET"])
 def reset():
-    db_connection = None
     try:
         db_connection = db.connect_db()
 

@@ -15,10 +15,6 @@ DROP PROCEDURE  IF EXISTS sp_load_garden_planner_db;
 DELIMITER //
   CREATE PROCEDURE sp_load_garden_planner_db()
   BEGIN
-      -- Create database and use it
-      -- un comment these if NOT using the CS340 database
-      -- CREATE DATABASE IF NOT EXISTS `movie`;
-      -- USE `movie`;
   
     SET FOREIGN_KEY_CHECKS=0;
     SET AUTOCOMMIT = 0;
@@ -163,7 +159,7 @@ DELIMITER ;
 */
 
 /* Inserts a new plant into Plant */
-DROP PROCEDURE  IF EXISTS sp_insert_into_plant;
+DROP PROCEDURE IF EXISTS sp_insert_into_plant;
 DELIMITER //
   CREATE PROCEDURE sp_insert_into_plant(
     IN species VARCHAR(150),
@@ -186,7 +182,7 @@ DELIMITER //
 DELIMITER ;
 
 /* Inserts a new plant into Plant_In_Bed */
-DROP PROCEDURE  IF EXISTS sp_insert_into_plant_in_bed;
+DROP PROCEDURE IF EXISTS sp_insert_into_plant_in_bed;
 DELIMITER //
   CREATE PROCEDURE sp_insert_into_plant_in_bed(
     IN plant_id INT,
@@ -206,7 +202,7 @@ DELIMITER //
 DELIMITER ;
 
 /* Inserts a new user into User */
-DROP PROCEDURE  IF EXISTS sp_insert_into_user;
+DROP PROCEDURE IF EXISTS sp_insert_into_user;
 DELIMITER //
   CREATE PROCEDURE sp_insert_into_user(
     IN first_name VARCHAR(50),
@@ -224,7 +220,7 @@ DELIMITER //
 DELIMITER ;
 
 /* Inserts a new garden into Garden */
-DROP PROCEDURE  IF EXISTS sp_insert_into_garden;
+DROP PROCEDURE IF EXISTS sp_insert_into_garden;
 DELIMITER //
   CREATE PROCEDURE sp_insert_into_garden(
     IN description VARCHAR(100),
@@ -243,7 +239,7 @@ DELIMITER //
 DELIMITER ;
 
 /* Inserts a new bed into Bed */
-DROP PROCEDURE  IF EXISTS sp_insert_into_bed;
+DROP PROCEDURE IF EXISTS sp_insert_into_bed;
 DELIMITER //
   CREATE PROCEDURE sp_insert_into_bed(
     IN label VARCHAR(50),
@@ -297,12 +293,12 @@ BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
   BEGIN
 	ROLLBACK;
-	SELECT 'Error! Plant_In_Bed not deleted.' AS Result;
+	SELECT 'Error! Plant_in_Bed not deleted.' AS Result;
   END;
  START TRANSACTION;
-  DELETE FROM Plant_In_Bed WHERE id = p_id;
+  DELETE FROM Plant_in_Bed WHERE id = p_id;
   COMMIT;
-  SELECT 'Plant_In_Bed deleted successfully.' AS Result;
+  SELECT 'Plant_in_Bed deleted successfully.' AS Result;
 END //
 DELIMITER ;
 
