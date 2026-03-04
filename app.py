@@ -74,6 +74,13 @@ def plants():
         if "db_connection" in locals() and db_connection:
             db_connection.close()
 
+# Citation for use of AI Tools:
+# Date: 2/19/2026
+# Prompts used to generate flask routes:
+# 1. Help me write a flask app route to delete a plant from plant_in_bed using a stored procedure.
+# 2. I need help writing a delete route for the plant-in-bed object (refactoring existing table and route code).
+# 3. I need help troubleshooting MySQL Error 1305 (Procedure does not exist) and Error 2014 (Commands out of sync).
+# AI Source URL: https://gemini.google.com/
 @app.route("/delete-plant/<int:id>", methods=["POST"])
 def delete_plant(id):
     db_connection = None
@@ -144,6 +151,11 @@ def gardens():
         if "db_connection" in locals() and db_connection:
             db_connection.close()
 
+# Citation for use of AI Tools:
+# Date: 2/19/2026
+# Prompts used to generate flask routes:
+# 1. Help me write a flask app route to delete a garden from garden using a stored procedure.
+# 2. I need help writing a delete route for the garden object (refactoring existing table and route code).
 @app.route("/delete-garden/<int:id>", methods=["POST"])
 def delete_garden(id):
     db_connection = None
@@ -213,6 +225,11 @@ def beds():
         if "db_connection" in locals() and db_connection:
             db_connection.close()
 
+# Citation for use of AI Tools:
+# Date: 2/19/2026
+# Prompts used to generate flask routes:
+# 1. Help me write a flask app route to delete a bed from bed using a stored procedure.
+# 2. I need help writing a delete route for the bed object (refactoring existing table and route code).
 @app.route("/delete-bed/<int:id>", methods=["POST"])
 def delete_bed(id):
     db_connection = None
@@ -249,6 +266,11 @@ def delete_bed(id):
 #  | |    | |____ / ____ \| |\  |  | |     _| |_| |\  | | |_) | |____| |__| |
 #  |_|    |______/_/    \_\_| \_|  |_|    |_____|_| \_| |____/|______|_____/ 
 
+# Citation for use of AI Tools:
+# Date: 2/19/2026
+# Prompts used to generate flask routes:
+# I need help refactoring the Insert route to utilize cursor.nextset() to consume result sets from MySQL stored procedures in Python.
+# AI Source URL: https://gemini.google.com/
 @app.route("/plants-in-beds", methods=["GET", "POST"])
 def plants_in_beds():
     try:
@@ -300,13 +322,13 @@ def edit_plant_in_bed(id):
         db_connection = db.connect_db()
         
         if request.method == "POST":
-            plant = request.form.get('update_plant_species')
+            plant = request.form.get('plant_id')
             bed = request.form.get('bed_id')
-            date_planted = request.form.get('update_date_planted')
-            plant_quantity = request.form.get('update_plant_quantity')
+            date_planted = request.form.get('date_planted')
+            plant_quantity = request.form.get('plant_quantity')
 
             cursor = db_connection.cursor()
-            cursor.callproc('sp_update_plant_in_bed', [id, plant, bed, date_planted, plant_quantity])
+            cursor.callproc('sp_update_plant_in_bed', [plant, bed, date_planted, plant_quantity, id])
 
             while cursor.nextset():
                 pass

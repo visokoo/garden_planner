@@ -1,5 +1,8 @@
 /*
 Data Manipulation Language (DML) statements for the CS340 Project
+
+All original work, no AI was used
+
 CS340 Garden Planner
 Authors: Vivian Ta, Ameya Patil Patkar
 GROUP 125

@@ -1,6 +1,15 @@
--- OSU CS340
--- Garden Planner Stored Procedures
+/*
+Garden Planner Stored Procedures
 
+Stored Procedures were adapted from provided OSU code in
+modules. Update SPs were created with the assistance of AI
+and documented where the source code is.
+Other than that, all original work, no AI was used.
+
+CS340 Garden Planner
+Authors: Vivian Ta, Ameya Patil Patkar
+GROUP 125
+*/
 /*
    _____ ______ _______   _    _ _____    _______       ____  _      ______  _____ 
   / ____|  ____|__   __| | |  | |  __ \  |__   __|/\   |  _ \| |    |  ____|/ ____|
