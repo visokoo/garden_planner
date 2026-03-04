@@ -4,6 +4,8 @@ Data Definition Language (DDL) statements for the CS340 Project
 These DDL statements will create the tables and insert example
 data that will be used for our website.
 
+All original work, no AI was used
+
 CS340 Garden Planner
 Authors: Vivian Ta, Ameya Patel Patkar
 GROUP 125
@@ -139,5 +141,3 @@ VALUES
 /* Turn back on foreign key checks */
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
-
-/* All original work, no AI was used */

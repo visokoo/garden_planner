@@ -1,6 +1,15 @@
--- OSU CS340
--- Garden Planner Stored Procedures
+/*
+Garden Planner Stored Procedures
 
+Stored Procedures were adapted from provided OSU code in
+modules. Update SPs were created with the assistance of AI
+and documented where the source code is.
+Other than that, all original work, no AI was used.
+
+CS340 Garden Planner
+Authors: Vivian Ta, Ameya Patil Patkar
+GROUP 125
+*/
 /*
    _____ ______ _______   _    _ _____    _______       ____  _      ______  _____ 
   / ____|  ____|__   __| | |  | |  __ \  |__   __|/\   |  _ \| |    |  ____|/ ____|
@@ -353,30 +362,54 @@ START TRANSACTION;
 END //
 DELIMITER ;
 
-/* Update Plant_in_Bed SP */
-DROP PROCEDURE IF EXISTS sp_update_plant_in_bed;
+/*
+  _    _ _____  _____       _______ ______ 
+ | |  | |  __ \|  __ \   /\|__   __|  ____|
+ | |  | | |__) | |  | | /  \  | |  | |__   
+ | |  | |  ___/| |  | |/ /\ \ | |  |  __|  
+ | |__| | |    | |__| / ____ \| |  | |____ 
+  \____/|_|    |_____/_/    \_\_|  |______|
+                                           
+*/
+
+-- Citation for use of AI Tools:
+-- Date: 3/01/2026
+-- Prompt used to generate stored procedure:
+-- How do I turn this <Update method in DML> into a stored procedure?
+-- AI Source URL: https://claude.ai/
+DROP PROCEDURE IF EXISTS sp_update_user;
 DELIMITER //
-CREATE PROCEDURE sp_update_plant_in_bed(
-  IN p_plant_in_bed_id INT,
-  IN p_plant_id INT,
-  IN p_bed_id INT,
-  IN p_date DATE,
-  IN p_quantity INT
+CREATE PROCEDURE sp_update_user (
+    IN p_first_name VARCHAR(255),
+    IN p_last_name  VARCHAR(255),
+    IN p_user_id    INT
 )
 BEGIN
- DECLARE EXIT HANDLER FOR SQLEXCEPTION
- BEGIN
- ROLLBACK;
- SELECT 'Error! Plant in Bed item not updated.' AS Result;
- END;
-START TRANSACTION;
- UPDATE Plant_in_Bed SET
- plant_id = p_plant_id,
- bed_id = p_bed_id,
- date_planted = p_date,
- plant_quantity = p_quantity
- WHERE id = p_plant_in_bed_id;
- COMMIT;
- SELECT 'Plant in Bed item successfully updated.' AS Result;
+    UPDATE User
+    SET first_name = p_first_name,
+        last_name  = p_last_name
+    WHERE user_id = p_user_id;
 END //
+
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS sp_update_plant_in_bed;
+DELIMITER //
+CREATE PROCEDURE sp_update_plant_in_bed (
+    IN p_plant_id        INT,
+    IN p_bed_id          INT,
+    IN p_date_planted    DATE,
+    IN p_plant_quantity  INT,
+    IN p_plant_in_bed_id INT
+)
+BEGIN
+    UPDATE Plant_in_Bed
+    SET plant_id = p_plant_id,
+        bed_id     = p_bed_id,
+        date_planted   = p_date_planted,
+        plant_quantity = p_plant_quantity
+    WHERE id = p_plant_in_bed_id;
+END //
+
 DELIMITER ;
