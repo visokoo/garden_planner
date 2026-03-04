@@ -11,12 +11,12 @@
             <tr>
                 {% if plants and plants|length > 0 %}
                     {% for key in plants[0].keys() %}
-                    <th>{{ key }}</th>
+                        <th>{{ key }}</th>
                     {% endfor %}
                 {% else %}
                     <th>id</th>
                     <th>species</th>
-                    <th>plant_category</th>
+                    <th>plant category</th>
                     <th>water requirements</th>
                     <th>sunlight</th>
                     <th>season</th>
@@ -29,43 +29,45 @@
 
         <tbody>
             {% for plant in plants %}
-            <tr>
-                <td>{{ plant.id }}</td>
-                <td>{{ plant.species }}</td>
-                <td>{{ plant['plant category'] }}</td>
-                <td>{{ plant['water requirements'] }}</td>
-                <td>{{ plant.sunlight }}</td>
-                <td>{{ plant.season }}</td>
-                <td>{{ plant.cycle }}</td>
-                {% if plant.edible == 1 %}
-                    <td>Yes</td>
-                {% else %}
-                    <td>No</td>
-                {% endif %}
+                <tr>
+                    <td>{{ plant.id }}</td>
+                    <td>{{ plant.species }}</td>
+                    <td>{{ plant['plant category'] }}</td>
+                    <td>{{ plant['water requirements'] }}</td>
+                    <td>{{ plant.sunlight }}</td>
+                    <td>{{ plant.season }}</td>
+                    <td>{{ plant.cycle }}</td>
+                    {% if plant.edible == 1 %}
+                        <td>Yes</td>
+                    {% else %}
+                        <td>No</td>
+                    {% endif %}
 
-                {# DELETE form #}
-                <form id="delete_plant_form" action="/delete-plant/{{ plant.id }}" method="POST">
-                    <input type="hidden" name="delete_plant" value="{{ plant.id }}">
+                    {# DELETE link - Styled as a button to fix the multiple-click issue #}
                     <td>
-                        <button type="submit" onclick="return confirm('Are you sure?')">
-                            Delete
-                        </button>
+                        <a href="javascript:void(0)" 
+                           class="delete-btn-link"
+                           onclick="if(confirm('Are you sure?')) { 
+                               var f = document.createElement('form');
+                               f.method='POST';
+                               f.action='/delete-plant/{{ plant.id }}';
+                               document.body.appendChild(f);
+                               f.submit();
+                           }">Delete</a>
                     </td>
-                </form>
-            </tr>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
-
 
     {# CREATE form #}
     <h2>Create a plant</h2>
     <form class="cuForm" id="create_plant" method="POST">
         <label for="create_plant_species">Species: </label>
-        <input type="text" name="create_plant_species" id="create_plant_species" required></br>
+        <input type="text" name="create_plant_species" id="create_plant_species" required><br>
 
         <label for="create_plant_category">Plant Category: </label>
-        <input type="text" name="create_plant_category" id="create_plant_category"></br>
+        <input type="text" name="create_plant_category" id="create_plant_category" required><br>
 
         <label for="create_water_requirements">Water Requirements: </label>
         <select name="create_water_requirements" id="create_water_requirements" required>
@@ -73,7 +75,7 @@
             <option value="Low">Low</option>
             <option value="Moderate">Moderate</option>
             <option value="High">High</option>
-        </select></br>
+        </select><br>
 
         <label for="create_sunlight">Sunlight: </label>
         <select name="create_sunlight" id="create_sunlight" required>
@@ -81,7 +83,7 @@
             <option value="Shade">Shade</option>
             <option value="Partial">Partial</option>
             <option value="Full">Full</option>
-        </select></br>
+        </select><br>
 
         <label for="create_season">Season: </label>
         <select name="create_season" id="create_season" required>
@@ -91,7 +93,7 @@
             <option value="Autumn">Autumn</option>
             <option value="Winter">Winter</option>
             <option value="Year-Round">Year-Round</option>
-        </select></br>
+        </select><br>
 
         <label for="create_cycle">Cycle: </label>
         <select name="create_cycle" id="create_cycle" required>
@@ -99,16 +101,17 @@
             <option value="Annual">Annual</option>
             <option value="Perennial">Perennial</option>
             <option value="Biennial">Biennial</option>
-        </select></br>
+        </select><br>
 
         <label for="create_edible">Edible:</label><br>
         <div class="radio-group">
             <input type="radio" id="create_edible_true" name="edible" value="1">
-            <label for="True">Yes</label></br>
+            <label for="create_edible_true">Yes</label><br>
+            
             <input type="radio" id="create_edible_false" name="edible" value="0" checked>
-            <label for="False">No</label>
+            <label for="create_edible_false">No</label>
         </div>
-        <input type="submit">
+        <input type="submit" value="Submit">
     </form>
 </div>
 

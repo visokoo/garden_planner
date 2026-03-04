@@ -9,13 +9,9 @@
         <thead>
             {# For the table header row, we print the DB attribute names #}
             <tr>
-                {% if bed and bed|length > 0 %}
+                {% if beds and beds|length > 0 %}
                     {% for key in beds[0].keys() %}
-                        {% if key == 'garden_id' %}
-                            <th>{{ key }}</th>
-                        {% else %}
-                            <th>{{ key }}</th>
-                        {% endif %}
+                        <th>{{ key }}</th>
                     {% endfor %}
                 {% else %}
                     <th>id</th>
@@ -30,28 +26,32 @@
 
         <tbody>
             {% for bed in beds %}
-            <tr>
-                <td>{{ bed.id }}</td>
-                <td>{{ bed.label }}</td>
-                <td>{{ bed['length (inches)'] }}</td>
-                <td>{{ bed['width (inches)'] }}</td>
-                <td>
-                {% for garden in gardens_dropdown %}
-                    {% if garden.garden_id == bed.garden %}
-                        {{ garden.location }}
-                    {% endif %}
-                {% endfor %}
-                </td>
-                {# DELETE form #}
-                <form id="delete_bed_form" action="/delete-bed/{{ bed.id }}" method="POST">
-                    <input type="hidden" name="delete_bed_id" value="{{ bed.id }}">
+                <tr>
+                    <td>{{ bed.id }}</td>
+                    <td>{{ bed.label }}</td>
+                    <td>{{ bed['length (inches)'] }}</td>
+                    <td>{{ bed['width (inches)'] }}</td>
                     <td>
-                        <button type="submit" onclick="return confirm('Are you sure?')">
-                            Delete
-                        </button>
+                        {% for garden in gardens_dropdown %}
+                            {% if garden.garden_id == bed.garden %}
+                                {{ garden.location }}
+                            {% endif %}
+                        {% endfor %}
                     </td>
-                </form>
-            </tr>
+
+                    {# DELETE form - Nested inside td to fix submission logic #}
+                    <td>
+                        <a href="javascript:void(0)" 
+                           class="delete-btn-link"
+                           onclick="if(confirm('Are you sure?')) { 
+                               var f = document.createElement('form');
+                               f.method='POST';
+                               f.action='/delete-bed/{{ bed.id }}';
+                               document.body.appendChild(f);
+                               f.submit();
+                           }">Delete</a>
+                    </td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
@@ -63,22 +63,22 @@
         <input type="text" name="create_bed_label" id="create_bed_label" required>
 
         <label for="create_bed_length">Length: </label>
-        <input type="number" name="create_bed_length" id="create_bed_length">
+        <input type="number" name="create_bed_length" id="create_bed_length" required>
 
         <label for="create_bed_width">Width: </label>
-        <input type="number" name="create_bed_width" id="create_bed_width">
+        <input type="number" name="create_bed_width" id="create_bed_width" required>
 
         <label for="create_bed_garden">Garden: </label>
         <select name="create_bed_garden" id="create_bed_garden" required>
-        <option value="NULL" selected>Select a Garden</option>
-        {% for garden in gardens_dropdown %}
-        <option value="{{ garden['garden_id'] }}"> 
-            {{ garden['location'] }} 
-        </option>
-        {% endfor %}
-    </select>
+            <option value="" disabled selected hidden>Select a Garden</option>
+            {% for garden in gardens_dropdown %}
+                <option value="{{ garden['garden_id'] }}"> 
+                    {{ garden['location'] }} 
+                </option>
+            {% endfor %}
+        </select>
 
-        <input type="submit">
+        <input type="submit" value="Submit">
     </form>
 </div>
 

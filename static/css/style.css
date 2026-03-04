@@ -18,6 +18,7 @@ body {
   color: #472c27;
   line-height: 1.5;
   min-height: 100vh;
+  padding: 50px;
 
   display: flex;
   flex-direction: column;
@@ -63,7 +64,6 @@ a {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   margin-left: 50px;
   margin-right: 50px;
-  margin-bottom: 50px;
   padding: 40px;
 }
 
@@ -292,4 +292,46 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
     opacity: 0.5;
+}
+
+td > form {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    box-shadow: none;  
+    max-width: none;   
+    width: auto;      
+}
+
+.delete-btn-link {
+    font-family: "Figtree", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fafaf8;
+    background-color: #5C8155;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+    text-decoration: none;
+    display: inline-block;
+    line-height: normal;
+    text-align: center;
+}
+
+
+/* Citation for use of AI Tools:
+Date: 3/04/2026
+Prompts used to refactor CSS:
+1. Help me style an HTML anchor tag to look exactly like a button using my specific CSS properties.
+2. Ensure the transition, padding, and hover colors remain consistent between the button and the link-based delete element.
+AI Source URL: https://gemini.google.com/ */
+
+.delete-btn-link:hover {
+    background-color: #8d5960; 
+    color: #fafaf8;
 }
