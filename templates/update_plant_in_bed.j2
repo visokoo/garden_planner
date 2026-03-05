@@ -1,6 +1,11 @@
 {% extends "main.j2" %}
 {% block content %}
 
+{% if error %}
+<div style="background-color: #fce4e4; border: 1px solid #f03e3e; color: #d63031; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+    <strong>Validation Error:</strong> {{ error }}
+</div>
+{% endif %}
 <div class="page">
     <h2>Update My Plant</h2>
 
