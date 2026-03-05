@@ -1,6 +1,11 @@
 {% extends "main.j2" %}
 {% block content %}
-
+{# Citation for use of AI Tools:
+# Date: 3/4/2026
+# Prompts used for help with date input validation:
+# 1. I pasted the HTML form code into the prompt and asked it to help me generate the
+# the renderings to show the error on the same page
+#}
 {% if error %}
 <div style="background-color: #fce4e4; border: 1px solid #f03e3e; color: #d63031; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
     <strong>Validation Error:</strong> {{ error }}
