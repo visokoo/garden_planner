@@ -1,4 +1,4 @@
-### Project Overview
+## Project Overview
 This is an application to help hobby gardeners in the United States plan out their home gardens.
 Home gardens can wildly vary in size and complexity, encompassing everything from 2 planters on
 a window sill to a large lot of 15 to 20 beds. Casual gardeners can have anywhere between 1 to
