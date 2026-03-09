@@ -1,3 +1,13 @@
+### Project Overview
+This is an application to help hobby gardeners in the United States plan out their home gardens.
+Home gardens can wildly vary in size and complexity, encompassing everything from 2 planters on
+a window sill to a large lot of 15 to 20 beds. Casual gardeners can have anywhere between 1 to
+even upwards of 100 plant species that they’re managing within their garden, each with unique
+water, sunlight, and seasonal needs. Taking care of a garden requires careful management of a 
+lot of moving parts so our website will help simplify that process for our 1,000 active users.
+Our website will record the Plants within each Bed which make up each User’s Garden and the 
+ownership of each Garden.
+
 ## Citations
 
 ### db_connector.py
