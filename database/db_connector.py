@@ -1,4 +1,4 @@
-# All code is based on the CS340 starter codee unless otherwise noted.
+# All code is based on the CS340 starter code unless otherwise noted.
 
 import MySQLdb
 

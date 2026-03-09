@@ -105,12 +105,11 @@ SET plant_id = :plant_id_from_dropdown_input,
     plant_quantity = :plant_quantity_input
 WHERE id = :plant_in_bed_id_selected_from_all_of_my_plants_page;
 
-
 -- populate target plant's current data into Update Plant Form 
 SELECT plant_id, bed_id, date_planted, plant_quantity
 FROM Plant_in_Bed
-WHERE id = :plant_in_bed_id_selected_from_all__of_my_plants_page;
+WHERE id = :plant_in_bed_id_selected_from_all_of_my_plants_page;
 
 -- dis-associate a plant from a bed (M-to-M relationship deletion)
 DELETE FROM Plant_in_Bed 
-WHERE id = :plant_in_bed_id_selected_from_all__of_my_plants_page;
+WHERE id = :plant_in_bed_id_selected_from_all_of_my_plants_page;

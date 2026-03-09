@@ -37,8 +37,11 @@ def home():
 #  | |__) | |       /  \  |  \| |  | |   
 #  |  ___/| |      / /\ \ | . ` |  | |   
 #  | |    | |____ / ____ \| |\  |  | |   
-#  |_|    |______/_/    \_\_| \_|  |_|             
+#  |_|    |______/_/    \_\_| \_|  |_|
 
+# No AI tools used, but just google searched how to call stored procedures
+# using the MySQLdb library in python: cursor.callproc()
+# Date: 2/19/2026
 @app.route("/plants", methods=["GET", "POST"])
 def plants():
     try:

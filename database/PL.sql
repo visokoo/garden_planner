@@ -276,6 +276,12 @@ DELIMITER ;
  |_____/|______|______|______|  |_|  |______|
                                                                                        
 */
+-- Citation for use of AI Tools:
+-- Date: 3/01/2026
+-- Used example code for all DELETE stored procedures
+-- Prompt used to generate stored procedure:
+-- How do I turn this <Delete method in DML> into a stored procedure?
+-- AI Source URL: https://claude.ai/
 
 /* Delete plant */
 DROP PROCEDURE IF EXISTS sp_delete_plant;
@@ -375,6 +381,7 @@ DELIMITER ;
 -- Citation for use of AI Tools:
 -- Date: 3/01/2026
 -- Prompt used to generate stored procedure:
+-- Used example code for all UPDATE stored procedures
 -- How do I turn this <Update method in DML> into a stored procedure?
 -- AI Source URL: https://claude.ai/
 DROP PROCEDURE IF EXISTS sp_update_user;
