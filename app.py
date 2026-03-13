@@ -6,6 +6,7 @@
 # with the exception of the actual queries used for querying the DB or otherwise noted.
 
 from flask import Flask, render_template, request, redirect, url_for
+from datetime import datetime
 import database.db_connector as db
 
 PORT = 8000
@@ -37,8 +38,11 @@ def home():
 #  | |__) | |       /  \  |  \| |  | |   
 #  |  ___/| |      / /\ \ | . ` |  | |   
 #  | |    | |____ / ____ \| |\  |  | |   
-#  |_|    |______/_/    \_\_| \_|  |_|             
+#  |_|    |______/_/    \_\_| \_|  |_|
 
+# No AI tools used, but just google searched how to call stored procedures
+# using the MySQLdb library in python: cursor.callproc()
+# Date: 2/19/2026
 @app.route("/plants", methods=["GET", "POST"])
 def plants():
     try:
@@ -285,11 +289,32 @@ def plants_in_beds():
         query2 = "SELECT bed_id, label FROM Bed ORDER BY label;"
         query3 = "SELECT plant_id, species FROM Plant ORDER BY species;"
 
+        my_plants = db.query(db_connection, query1).fetchall()
+        beds_dropdown = db.query(db_connection, query2).fetchall()
+        plants_dropdown = db.query(db_connection, query3).fetchall()
+
         if request.method == "POST":
             plant = request.form.get('create_plant_species')
             bed = request.form.get('create_plant_bed')
             date_planted = request.form.get('create_date_planted')
             plant_quantity = request.form.get('create_plant_quantity')
+            # Citation for use of AI Tools:
+            # Date: 3/4/2026
+            # Prompts used for help with date input validation:
+            # 1. Help me refactor this function to vailidate date inputs
+            # 2. Gemini completely refactored the function but I only grabbed the necessary bits
+            try:
+                datetime.strptime(date_planted, '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                error = "Invalid date format. Please use the date picker (YYYY-MM-DD)."
+                return render_template(
+                    "plant_in_bed.j2",
+                    my_plants=my_plants,
+                    plants_dropdown=plants_dropdown,
+                    beds_dropdown=beds_dropdown,
+                    id=id,
+                    error=error
+                )
 
             cursor = db_connection.cursor()
             cursor.callproc('sp_insert_into_plant_in_bed', [plant, bed, date_planted, plant_quantity, 0])
@@ -300,10 +325,6 @@ def plants_in_beds():
             db_connection.commit()
             cursor.close()  
             return redirect(url_for("plants_in_beds"))
-        
-        my_plants = db.query(db_connection, query1).fetchall()
-        beds_dropdown = db.query(db_connection, query2).fetchall()
-        plants_dropdown = db.query(db_connection, query3).fetchall()
 
         return render_template(
             "plant_in_bed.j2", my_plants=my_plants, beds_dropdown=beds_dropdown, plants_dropdown=plants_dropdown
@@ -321,24 +342,7 @@ def plants_in_beds():
 def edit_plant_in_bed(id):
     try:
         db_connection = db.connect_db()
-        
-        if request.method == "POST":
-            plant = request.form.get('plant_id')
-            bed = request.form.get('bed_id')
-            date_planted = request.form.get('date_planted')
-            plant_quantity = request.form.get('plant_quantity')
 
-            cursor = db_connection.cursor()
-            cursor.callproc('sp_update_plant_in_bed', [plant, bed, date_planted, plant_quantity, id])
-
-            while cursor.nextset():
-                pass
-
-            db_connection.commit()
-            cursor.close()
-            return redirect(url_for("plants_in_beds"))
-
-        # GET method logic
         query = "SELECT plant_id, bed_id, date_planted, plant_quantity FROM Plant_in_Bed WHERE id = %s;"
         cursor = db.query(db_connection, query, (id,))
         plant_data = cursor.fetchone()
@@ -348,6 +352,38 @@ def edit_plant_in_bed(id):
 
         query3 = "SELECT bed_id, label FROM Bed;"
         beds_dropdown = db.query(db_connection, query3).fetchall()
+
+        if request.method == "POST":
+            plant = request.form.get('plant_id')
+            bed = request.form.get('bed_id')
+            date_planted = request.form.get('date_planted')
+            plant_quantity = request.form.get('plant_quantity')
+            # Citation for use of AI Tools:
+            # Date: 3/4/2026
+            # Prompts used for help with date input validation:
+            # 1. Help me refactor this function to vailidate date inputs
+            # 2. Gemini completely refactored the function but I only grabbed the necessary bits
+            try:
+                datetime.strptime(date_planted, '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                error = "Invalid date format. Please use the date picker (YYYY-MM-DD)."
+                return render_template(
+                    "update_plant_in_bed.j2",
+                    plant_data=plant_data,
+                    plants_dropdown=plants_dropdown,
+                    beds_dropdown=beds_dropdown,
+                    id=id,
+                    error=error
+                )
+            cursor = db_connection.cursor()
+            cursor.callproc('sp_update_plant_in_bed', [plant, bed, date_planted, plant_quantity, id])
+
+            while cursor.nextset():
+                pass
+
+            db_connection.commit()
+            cursor.close()
+            return redirect(url_for("plants_in_beds"))
 
         return render_template(
             "update_plant_in_bed.j2",

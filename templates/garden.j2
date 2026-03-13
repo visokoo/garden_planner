@@ -1,3 +1,5 @@
+{# All code is based on the CS340 starter code or original unless otherwise noted. #}
+
 {% extends "main.j2" %}
 {% block content %}
 
@@ -35,7 +37,13 @@
                     <td>{{ garden.description }}</td>
                     <td>{{ garden.location }}</td>
                     <td>{{ garden.owner }}</td>
-
+                    {#
+                        Citation for use of AI Tools:
+                        Date: 2/19/2026
+                        Prompts used to generate on click confirmation for delete:
+                        1. Help me write a on click confirmation for a delete button in html
+                        AI Source URL: https://gemini.google.com/
+                    #}
                     {# DELETE link - Styled as a button to fix the multiple-click issue #}
                     <td>
                         <a href="javascript:void(0)" 
