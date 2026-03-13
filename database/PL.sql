@@ -1,10 +1,9 @@
 /*
 Garden Planner Stored Procedures
 
-Stored Procedures were adapted from provided OSU code in
-modules. Update SPs were created with the assistance of AI
-and documented where the source code is.
-Other than that, all original work, no AI was used.
+All Stored Procedure are either based on the CS340 starter code in the modules (https://canvas.oregonstate.edu/courses/2031764) 
+or created with the assistance of AI tools such as Claude (https://claude.ai) and Gemini (https://gemini.google.com/app) [details included in the Update procedures where it was used], 
+or original work unless otherwise noted.
 
 CS340 Garden Planner
 Authors: Vivian Ta, Ameya Patil Patkar
