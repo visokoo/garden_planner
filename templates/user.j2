@@ -3,6 +3,12 @@
 {% extends "main.j2" %}
 {% block content %}
 
+{#
+  All code is either based on the CS340 starter code (https://canvas.oregonstate.edu/courses/2031764) 
+  or created with the assistance of AI tools such as Claude (https://claude.ai) and Gemini (https://gemini.google.com/app) [details included in each section where it was used], 
+  Other than that, all original work unless otherwise noted.
+#}
+
 <div class="page">
     <h1>View All Users</h1>
 
@@ -37,13 +43,15 @@
                             <button type="button">Edit</button>
                         </a>
                     </td>
-                    {#
-                        Citation for use of AI Tools:
-                        Date: 2/19/2026
-                        Prompts used to generate on click confirmation for delete:
-                        1. Help me write a on click confirmation for a delete button in html
+
+                    {# 
+                        Citation for the DELETE button implementation:
+                        Date: 3/04/2026
+                        Prompts used to fix multiple-click issue on delete:
+                        How do I style a delete link as a button to prevent multiple form submissions in Jinja?
                         AI Source URL: https://gemini.google.com/
                     #}
+
                     {# DELETE link - Styled as a button to fix the multiple-click issue #}
                     <td>
                         <a href="javascript:void(0)" 

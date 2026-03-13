@@ -1,12 +1,8 @@
-/*
-All work provided is original unless otherwise specified before
-the code block.
+/* 
+Advanced CSS structures such as the form and table were created with the assistance of Claude, an AI tool [details included in the form and table sections where it was used], 
+Other than that, all original work unless otherwise noted.
 */
 
-/* No AI use, but google searched for font options:
-Date: 03/04/2026
-Searched google for font options and found Figtree and Vibur
-*/
 @import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Vibur&display=swap');
 
 /* === RESET === */
@@ -185,7 +181,11 @@ button:hover {
     background-color: #8d5960;
 }
 
-/* === FORMS === */
+/* === Forms === */
+/* Citation for use of AI Tools:
+Date: 03/01/2026
+Prompt: Create a modern form in the same style as the table
+AI Source URL: https://claude.ai/ */
 form {
     font-family: "Figtree", sans-serif;
     background-color: #fafaf8;

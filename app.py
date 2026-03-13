@@ -1,8 +1,9 @@
 # ########################################
 # ########## SETUP
 
-# All code is based on the CS340 starter code, with the exception of the actual queries
-# used for querying the DB or otherwise noted.
+# All code is either based on the CS340 starter code (https://canvas.oregonstate.edu/courses/2031764) 
+# or created with the assistance of AI tools such as Claude (https://claude.ai) and Gemini (https://gemini.google.com/app) [details included in each route where it was used], 
+# with the exception of the actual queries used for querying the DB or otherwise noted.
 
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
